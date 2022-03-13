@@ -1,0 +1,111 @@
+{% extends 'blog/base.html' %} {% block content %}
+<article class="media content-section">
+  <img
+    class="rounded-circle article-img"
+    src="{{object.author.profile.image.url}}"
+    alt="No_Image"
+  />
+
+
+  <!-- {% url 'user-posts' post.author.username %} -->
+
+  <div class="media-body">
+    <div class="article-metadata">
+      <a
+        class="author_name_new"
+        href="{% url 'user-posts' object.author.username %}"
+      >
+        <strong>{{ object.author }} </strong></a
+      >
+      <small class="author_name text-muted" style="float: right"
+        >{{ object.date_posted|date:"F d, Y" }}</small
+      >
+
+      {% if object.author == user %}
+      <div>
+        <!-- update-btn medium-btn b -->
+        <a class="update-button-fix btn-sm mt-1 mb-2"  href="{% url 'post-update' object.id %}"
+          ><strong>Update</strong></a
+        >
+        <a
+          class=" delete-button-fix btn-sm mt-1 mb-2" 
+          href="{% url 'post-delete' object.id %}"
+          ><strong>Delete</strong></a
+        >
+
+        
+      </div>
+      <!-- btn btn-danger btn-sm mt-1 mb-1 -->
+      {% endif %}
+      <!-- {{safe}} -->
+    </div>
+    <hr>
+
+    <h2 class="article-title">
+     <center> <strong> {{ object.title }}</strong></center>
+      <hr>
+    </h2>
+    <p class="article-content">
+      
+      {% if post.header_image %}
+      <!-- HEADER IMAGE  -->
+          <img class="header-img" src="{{post.header_image.url}}">
+      {% endif %}
+        
+      {{ object.content | safe}}
+       <!-- Share button  -->
+    <div class="share-btn-container">
+      <a href="#" class="facebook-btn" target="_blank">
+        <i class="fab fa-facebook"></i>
+      </a>
+
+      <a href="#" class="twitter-btn" target="_blank">
+        <i class="fab fa-twitter"></i>
+      </a>
+
+      <a href="#" class="pinterest-btn" target="_blank">
+        <i class="fab fa-pinterest"></i>
+      </a>
+
+      <a href="#" class="linkedin-btn" target="_blank">
+        <i class="fab fa-linkedin"></i>
+      </a>
+
+      <a href="#" class="whatsapp-btn" target="_blank" >
+        <i class="fab fa-whatsapp"></i>
+      </a>
+    </div>
+
+       <!-- share button ends -->
+    </p>
+        
+  </div>
+</article>
+
+<form action="{% url 'like_post' post.pk%}" method="POST">
+  {% csrf_token%}
+  
+  {% if user.is_authenticated %}
+    
+
+    
+  {% if liked %}
+
+   <button type = "sumbit", name = "post_id", value="{{post.id}}", class="btn btn-danger btn-sm">
+    Unlike {{total_likes}}
+  </button> 
+  {% else %}
+
+    <button type = "submit", name = "post_id", value="{{post.id}}", class="btn btn-primary btn-sm">
+    Like {{total_likes}}
+  </button> 
+    
+  {% endif %}
+  {% else %}
+   <a  class = "fix_signIn " href="{% url 'login' %}">Login</a> 
+   <small>Login to like </small>
+  {% endif %}
+
+</form>
+{% endblock content %}
+<!-- mr-2 -> post.author class replace author_name  -->

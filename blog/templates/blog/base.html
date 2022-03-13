@@ -1,0 +1,148 @@
+<!--  this page is used for inhertance  -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+ 
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital@1&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+
+<!-- Article heading font -->
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&display=swap" rel="stylesheet">
+<!-- /////////////////  -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+    />
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}" media="all"  />
+
+  <!-- THIS IS LINKING OF JAVASCRIPT FILE TO DJANGO or BASE.HTML -->
+<!-- <script src="{% static 'blog/main.js' %}"></script> -->
+
+
+  {% if title %}
+  <title>Django Blog - {{ title }}</title>
+  {% else %}
+  <title>Django Blog</title>
+  {% endif %}
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="neumorphic navbar navbar-expand-md navbar-light bg-lignt bg-steel fixed-top">
+      <!-- neumorphic navbar navbar-expand-md navbar-dark bg-steel fixed-top -->
+      <div class="container">
+        <!-- navbar-brand -->
+        <a class="fix-website-name-navbar mr-4" href="/"><strong> Vamana's Blog</strong></a>
+        <!-- "neumorphic navbar-toggler"  -->
+        <button class="neumorphic navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#nav1"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation"  >
+          <span class=navbar-toggler-icon my-toggler"></span>
+        
+        </button>
+          <!-- <button class="neumorphic navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#nav1"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation"  >
+          <span class="navbar-toggler-icon"></span>
+        
+        </button> -->
+        <div class="collapse navbar-collapse" id="nav1">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link " href="{% url 'blog-home' %}"><center>HOME</center></a>
+            <!-- nav-item nav-link -->
+            <a class=" nav-item nav-link" href="{% url 'blog-about' %}"><center>ABOUT</center></a>
+          </div>
+
+             <!-- <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link " href="{% url 'blog-home' %}"><strong>Home</strong></a>
+           
+            <a class=" nav-item nav-link" href="{% url 'blog-about' %}"><strong>About</strong></a>
+          </div> -->
+          <!-- Navbar Right Side -->
+          <div class=" navbar-nav">
+            {% if user.is_authenticated %}
+             <a class=" nav-item nav-link" href="{% url 'post-create' %}"><center>NEW POST</center></a>
+             <a class=" nav-item nav-link" href="{% url 'profile' %}"><center>PROFILE</center></a>
+            <a class=" nav-item nav-link" href="{% url 'logout' %}"><center>LOGOUT</center></a>
+            {% else %}
+            <a class=" nav-item nav-link" href="{% url 'login' %}"><center>LOGIN</center></a>
+            <a class=" nav-item nav-link" href="{% url 'register' %}"><center>REGISTER</center></a>
+            
+            {% endif %}
+
+
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main role="main" class="container">
+    <div class="row">
+      <div class="user-post-number col-md-11 ">
+        <!-- col-md-8 -->
+        {% if messages  %}
+        {% for message in messages  %}
+
+        <div class='alert alert-{{ message.tags }}'>
+          {{ message }}
+
+        </div>
+
+        {% endfor %}
+
+        {% endif %}
+
+        {% block content %}{% endblock %}
+      </div>
+      <!-- <div class="col-md-4 "> -->
+        <!-- col-md-2 -->
+
+
+        <!-- SIDEBAR  -->
+        <!-- <div class="bg-green sidebar-size"> -->
+          <!-- exclide this  ->  <div class="bg-green content-section"> -->
+          <!-- <center><h3>Sidebar</h3></center>
+          <p class='text-muted'>
+          <ul class="neumorphic-sidebar"> -->
+           
+            <!-- <li class="list-group-item bg-green "><center>Categories</center></li>
+            <li class="list-group-item bg-green "><center>Announcements</center></li>
+            <li class="list-group-item bg-green "><center>Most liked post</center></li>
+          
+          </ul>
+          </p>
+         </div> -->
+      <!-- </div> -->
+    </div>
+  </main>
+
+ 
+ <script src="{% static 'blog/main.js' %}"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>

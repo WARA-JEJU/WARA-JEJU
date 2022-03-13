@@ -1,0 +1,30 @@
+{% extends 'blog/base.html' %} {% block content %}
+<div class="content-section">
+  <form method="POST">
+    <!-- #csrf_token(cross site forgery token) is used avoid #any #attack on our
+    website  -->
+    {% csrf_token %}
+    <fieldset class="form-group">
+      <legend class="input-border border-bottom mb-4" text-align: center>
+        Delete Post
+      </legend>
+      <h2>
+        <strong
+          >Are you sure you want to delete the post?"{{ object.title }}"</strong
+        >
+      </h2>
+    </fieldset>
+    <div class="form-group">
+      <button class="button_fix btn btn-outline-danger" type="submit">
+        <strong>Yes, Delete!</strong>
+      </button>
+      <a
+        class="button_fix btn btn-outline-secondary"
+        href="{% url 'post-detail' object.id %}"
+      >
+        <strong>Cancel</strong>
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock content %}
