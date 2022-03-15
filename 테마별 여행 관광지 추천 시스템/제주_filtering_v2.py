@@ -108,8 +108,8 @@ result["total"]
 # In[66]:
 
 
-jeju_tour_copy["검색결과"] = ""
-jeju_tour_copy.head()
+#jeju_tour_copy["검색결과"] = ""
+#jeju_tour_copy.head()
 
 # ## 2. 없어진 장소 처리
 

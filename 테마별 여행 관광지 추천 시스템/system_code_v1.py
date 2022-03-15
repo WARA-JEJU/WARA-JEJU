@@ -17,15 +17,12 @@
 # 사용 라이브러리
 import json
 import requests
-import folium
 import pandas as pd
 import numpy as np
 import folium
 import matplotlib.pyplot as plt
-import set_matplotlib_korean
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from tqdm.notebook import tqdm
 
 # In[2]:
 
