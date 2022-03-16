@@ -1,0 +1,110 @@
+{% extends 'blog/base.html' %} {% load crispy_forms_tags %} {% block content %}
+<div class="content-section">
+  <form method="post">
+    <!-- #csrf_token(cross site forgery token) is used avoid #any #attack on our
+    website  -->
+    {% csrf_token %}
+    <fieldset class="form-group">
+      <legend class="input-border border-bottom mb-4" text-align: center>
+        Join Today!
+      </legend>
+      <!-- {{ form|crispy }} -->
+
+      <div id="div_id_username" class="form-group">
+        <label for="id_username" class="requiredField">
+          Username<span class="asteriskField">*</span>
+        </label>
+        <div class="">
+          <input
+            type="text"
+            name="username"
+            maxlength="150"
+            autofocus
+            class="textinput textInput form-control"
+            required
+            id="id_username"
+          />
+          <small id="hint_id_username" class="form-text text-color"
+            >Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.</small
+          >
+        </div>
+      </div>
+      <div id="div_id_email" class="form-group">
+        <label for="id_email" class="requiredField">
+          Email<span class="asteriskField">*</span>
+        </label>
+        <div class="">
+          <input
+            type="email"
+            name="email"
+            class="emailinput form-control"
+            required
+            id="id_email"
+          />
+        </div>
+      </div>
+      <div id="div_id_password1" class="form-group">
+        <label for="id_password1" class="requiredField">
+          Password<span class="asteriskField">*</span>
+        </label>
+        <div class="">
+          <input
+            type="password"
+            name="password1"
+            autocomplete="new-password"
+            class="textinput textInput form-control"
+            required
+            id="id_password1"
+          />
+          <small id="hint_id_password1" class="form-text text-color"
+            ><ul>
+              <li>
+                Your password can’t be too similar to your other personal
+                information.
+              </li>
+              <li>Your password must contain at least 8 characters.</li>
+              <li>Your password can’t be a commonly used password.</li>
+              <li>Your password can’t be entirely numeric.</li>
+            </ul></small
+          >
+        </div>
+      </div>
+      <div id="div_id_password2" class="form-group">
+        <label for="id_password2" class="requiredField">
+          Password confirmation<span class="asteriskField">*</span>
+        </label>
+        <div class="">
+          <input
+            type="password"
+            name="password2"
+            autocomplete="new-password"
+            class="textinput textInput form-control"
+            required
+            id="id_password2"
+          />
+          <small id="hint_id_password2" class="form-text text-color"
+            >Enter the same password as before, for verification.</small
+          >
+        </div>
+      </div>
+    </fieldset>
+    <div class="form-group">
+      <!--  -->
+      <button class="button_fix btn btn-outline-info" type="submit">
+        <!-- button_fix -->
+        <!-- btn btn-outline-info -->
+        <strong>Sign Up</strong>
+      </button>
+    </div>
+  </form>
+  <div class="border-top pt-3">
+    <small class="already_account text-muted">
+      Already Have An Account?
+      <a class="fix_signIn ml-2" href="{% url 'login' %}">
+        <strong>Sign In</strong>
+      </a>
+    </small>
+  </div>
+</div>
+{% endblock content %}
