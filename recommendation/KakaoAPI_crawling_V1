@@ -165,3 +165,21 @@ def naver_search_result(jeju_name):
         result.extend(doc['item'])
         
     return result
+
+import pandas as pd
+from tqdm.notebook import tqdm # python 진행률 프로세스바
+
+def navar_search_df():
+    results = []
+    for idx, row in tqdm(jeju_kakao_crawling.iterrows()):
+        r = pd.DataFrame(kakao_search_result(row['업종명']))
+        jeju_kakao_crawling['address'][idx] = r['address']
+        jeju_kakao_crawling['x'][idx] = r['mapx']
+        jeju_kakao_crawling['y'][idx] = r['mapy']
+        jeju_kakao_crawling['plase_url'][idx] = r['link']
+        results.append(r.copy())
+    return pd.concat(results).reset_index(drop=True)
+    
+jeju_naver_api = navar_search_df()
+
+jeju_naver_api.head(2)
