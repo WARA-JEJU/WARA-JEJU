@@ -88,7 +88,8 @@ def kakao_crawling():
       url = i["place_url"]
       driver.implicitly_wait(8)
       driver.get(url)
-      grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_score > span.color_b2 > span:nth-child(1)")
+      #grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_score > span.color_b2 > span:nth-child(1)")
+      grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_score > span:nth-child(1) > span:nth-child(1)")
       kakao_grade = grade.text
       jeju_api["kakao_grade"][idx] = kakao_grade
 
