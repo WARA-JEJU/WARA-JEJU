@@ -41,8 +41,10 @@ def kakao_search_result(jeju_name):
     
 from tqdm.notebook import tqdm # python 진행률 프로세스바
 
+import pandas as pd
+from tqdm.notebook import tqdm # python 진행률 프로세스바
+
 def kakao_search_df():
-    results = []
     for idx, row in tqdm(jeju_range.iterrows()):
         print('제주도 ' + row['업소명'])
         r = pd.DataFrame(kakao_search_result('제주도' + row['업소명']))
@@ -57,9 +59,9 @@ def kakao_search_df():
           jeju_range['x'][idx] = ''
           jeju_range['y'][idx] = ''
           jeju_range['place_url'][idx] = ''
-    return pd.concat(results).reset_index(drop=True)
-    jeju_api = kakao_search_df()
-
+    return pd.DataFrame(jeju_range)
+    
+jeju_api = kakao_search_df()
 jeju_api.head(2)
 
 jeju_api["kakao_grade"] = ""
