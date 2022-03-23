@@ -139,21 +139,22 @@ from tqdm.notebook import tqdm # python 진행률 프로세스바
 def navar_search_df():
     category = ['address', 'mapx', 'mapy', 'link']
     for idx, row in tqdm(jeju_range.iterrows()):
-        print('업소명 = 제주도 ' + row['업소명'])
-        r = pd.DataFrame(naver_search_result('제주도' + row['업소명']))
-        for bowl in category:
-          try:
-            print(bowl +' = ' +  r[bowl][0])
-            if bowl == 'mapx':
-              jeju_range['x'][idx] = r[bowl][0]
-            elif  bowl == 'mapy':
-              jeju_range['y'][idx] = r[bowl][0]
-            elif  bowl == 'link':
-              jeju_range['place_url'][idx] = r[bowl][0]
-            else:
-              jeju_range[bowl][idx] = r[bowl][0]
-          except:
-            break
+        if row['x'] == '':
+          print('업소명 = 제주도 ' + row['업소명'])
+          r = pd.DataFrame(naver_search_result('제주도' + row['업소명']))
+          for bowl in category:
+            try:
+              print(bowl +' = ' +  r[bowl][0])
+              if bowl == 'mapx':
+                jeju_range['x'][idx] = r[bowl][0]
+              elif  bowl == 'mapy':
+                jeju_range['y'][idx] = r[bowl][0]
+              #elif  bowl == 'link':
+              #  jeju_range['place_url'][idx] = r[bowl][0]
+              else:
+                jeju_range[bowl][idx] = r[bowl][0]
+            except:
+              break
     return pd.DataFrame(jeju_range)
     
 jeju_naver_api = navar_search_df()
