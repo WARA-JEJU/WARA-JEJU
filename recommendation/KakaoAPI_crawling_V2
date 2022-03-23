@@ -7,14 +7,14 @@ import pandas as pd
 
 jeju_range = pd.read_csv("/제주특별자치도_숙박업현황_01_02_2020.csv", encoding="CP949")
 jeju_range['address'] = ''      # 도로명 Data
-jeju_range['x'] = ''            # 위도 Data
-jeju_range['y'] = ''            # 경도 Data
+jeju_range['x'] = ''            # 경도 Data
+jeju_range['y'] = ''            # 위도 Data
 jeju_range['place_url'] = ''    # 카카오 Map URL Data
 jeju_range['thumbnail'] = ''    # 썸네일 Image Url Data
 jeju_range['image_link'] = ''   # Image Url Data
 jeju_range.tail()
 
-## 카카오 위도, 경도, 리뷰 링크 조회 API Start
+## 카카오 경도, 경도, 리뷰 링크 조회 API Start
 
 import json
 import requests
@@ -73,7 +73,7 @@ jeju_range["kakao_img"] = ''
 
 jeju_range[jeju_range['place_url'] != '']
 
-## 카카오 위도, 경도, 리뷰 링크 조회 API End
+## 카카오 경도, 위도, 리뷰 링크 조회 API End
 
 ## 크롬드라이버 크롤링 Start
 
