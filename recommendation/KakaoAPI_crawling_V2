@@ -55,10 +55,7 @@ def kakao_search_df():
             else:
               jeju_range[bowl][idx] = r[bowl][0]
           except:
-            if bowl == 'address_name':
-              jeju_range['address'][idx] = ''
-            else:
-              jeju_range[bowl][idx] = ''
+            break
     return pd.DataFrame(jeju_range)
     
 kakao_search_df()
@@ -152,18 +149,11 @@ def navar_search_df():
             elif  bowl == 'mapy':
               jeju_range['y'][idx] = r[bowl][0]
             elif  bowl == 'link':
-              jeju_range['plase_url'][idx] = r[bowl][0]
+              jeju_range['place_url'][idx] = r[bowl][0]
             else:
               jeju_range[bowl][idx] = r[bowl][0]
           except:
-            if bowl == 'mapx':
-              jeju_range['x'][idx] = ''
-            elif  bowl == 'mapy':
-              jeju_range['y'][idx] = ''
-            elif  bowl == 'link':
-              jeju_range['plase_url'][idx] = ''
-            else:
-              jeju_range[bowl][idx] = ''
+            break
     return pd.DataFrame(jeju_range)
     
 jeju_naver_api = navar_search_df()
