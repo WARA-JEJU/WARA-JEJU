@@ -1,15 +1,20 @@
 !pip install selenium
 !pip install pandas
 !pip install matplotlib
+!pip install pyproj
 
 import pandas as pd
 
 jeju_range = pd.read_csv("/제주특별자치도_숙박업현황_01_02_2020.csv", encoding="CP949")
-jeju_range['address'] = ''
-jeju_range['x'] = ''
-jeju_range['y'] = ''
-jeju_range['place_url'] = ''
+jeju_range['address'] = ''      # 도로명 Data
+jeju_range['x'] = ''            # 위도 Data
+jeju_range['y'] = ''            # 경도 Data
+jeju_range['place_url'] = ''    # 카카오 Map URL Data
+jeju_range['thumbnail'] = ''    # 썸네일 Image Url Data
+jeju_range['image_link'] = ''   # Image Url Data
 jeju_range.tail()
+
+## 카카오 위도, 경도, 리뷰 링크 조회 API Start
 
 import json
 import requests
@@ -68,6 +73,10 @@ jeju_range["kakao_img"] = ''
 
 jeju_range[jeju_range['place_url'] != '']
 
+## 카카오 위도, 경도, 리뷰 링크 조회 API End
+
+## 크롬드라이버 크롤링 Start
+
 from selenium import webdriver
 import matplotlib.pyplot as plt
 import time
@@ -109,6 +118,10 @@ def kakao_crawling():
 jeju_kakao_crawling = kakao_crawling()
 jeju_kakao_crawling.tall()
 
+## 크롬드라이버 크롤링 End
+
+## 네이버 TM128 좌표 조회 API Start
+
 import json
 import requests
 
@@ -129,7 +142,7 @@ def naver_search_result(jeju_name):
     if res.status_code == 200:
         # Json을 이용하여 해제
         doc = json.loads(res.text)
-        result.extend(doc['item'])
+        result.extend(doc['items'])
         
     return result
     
@@ -155,7 +168,77 @@ def navar_search_df():
                 jeju_range[bowl][idx] = r[bowl][0]
             except:
               break
+            finally:
+              if jeju_range['x'][idx] != '' and jeju_range['y'][idx] != '':
+                x,y = tm128_to_wgs84(jeju_range['x'][idx], jeju_range['y'][idx])
+                jeju_range['x'][idx] = x
+                jeju_range['y'][idx] = y
     return pd.DataFrame(jeju_range)
-    
+ 
+from pyproj import Proj
+from pyproj import transform
+
+WGS84 = { 'proj':'latlong', 'datum':'WGS84', 'ellps':'WGS84', }
+
+TM128 = { 'proj':'tmerc', 'lat_0':'38N', 'lon_0':'128E', 'ellps':'bessel',
+        'x_0':'400000', 'y_0':'600000', 'k':'0.9999',
+        'towgs84':'-146.43,507.89,681.46'}
+
+def tm128_to_wgs84(x, y):
+   return transform( Proj(**TM128), Proj(**WGS84), x, y )
+   
 jeju_naver_api = navar_search_df()
 jeju_naver_api.tail()
+
+## 네이버 TM128 좌표 조회 API End
+
+## 네이버 이미지 조회 API Start
+
+import json
+import requests
+
+def naver_image_result(jeju_name):
+    result = []
+
+    # REST 키
+    client_key = 'xzjv8j9BbPlDkjv3L4cP'
+    client_secret = 'qXSjpcpeln'
+    # 헤더
+    headers = {"X-Naver-Client-Id" : client_key, 
+              "X-Naver-Client-Secret" : client_secret}
+    # 파라미터
+    url = "https://openapi.naver.com/v1/search/image?query="+jeju_name
+
+    # GET을 이용하여 획득
+    res = requests.get(url, headers=headers)
+    if res.status_code == 200:
+        # Json을 이용하여 해제
+        doc = json.loads(res.text)
+        result.extend(doc['items'])
+        
+    return result
+    
+import pandas as pd
+from tqdm.notebook import tqdm # python 진행률 프로세스바
+
+def navar_image_df():
+    category = ['link', 'thumbnail']
+    for idx, row in tqdm(jeju_range.iterrows()):
+        if row['x'] == '':
+          print('업소명 = 제주도 ' + row['업소명'])
+          r = pd.DataFrame(naver_image_result('제주도' + row['업소명']))
+          for bowl in category:
+            try:
+              print(bowl +' = ' +  r[bowl][0])
+              if bowl == 'link':
+                jeju_range['image_link'][idx] = r[bowl][0]
+              else:
+                jeju_range[bowl][idx] = r[bowl][0]
+            except:
+              break
+    return pd.DataFrame(jeju_range)
+    
+jeju_naver_api = navar_image_df()
+jeju_naver_api.tail()
+
+## 네이버 이미지 조회 API End
