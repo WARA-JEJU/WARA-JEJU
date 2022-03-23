@@ -45,28 +45,33 @@ import pandas as pd
 from tqdm.notebook import tqdm # python 진행률 프로세스바
 
 def kakao_search_df():
+    category = ['address_name', 'x', 'y', 'place_url']
     for idx, row in tqdm(jeju_range.iterrows()):
-        print('제주도 ' + row['업소명'])
+        print('업소명 = 제주도 ' + row['업소명'])
         r = pd.DataFrame(kakao_search_result('제주도' + row['업소명']))
-        try:
-          print(r['address_name'])
-          jeju_range['address'][idx] = r['address_name']
-          jeju_range['x'][idx] = r['x']
-          jeju_range['y'][idx] = r['y']
-          jeju_range['place_url'][idx] = r['place_url']
-        except:
-          jeju_range['address'][idx] = ''
-          jeju_range['x'][idx] = ''
-          jeju_range['y'][idx] = ''
-          jeju_range['place_url'][idx] = ''
+        for bowl in category:
+          try:
+            print(bowl +' = ' +  r[bowl][0])
+            if bowl == 'address_name':
+              jeju_range['address'][idx] = r[bowl][0]
+            else:
+              jeju_range[bowl][idx] = r[bowl][0]
+          except:
+            if bowl == 'address_name':
+              jeju_range['address'][idx] = ''
+            else:
+              jeju_range[bowl][idx] = ''
     return pd.DataFrame(jeju_range)
     
-jeju_api = kakao_search_df()
-jeju_api.head(2)
+kakao_search_df()
 
-jeju_api["kakao_grade"] = ""
-jeju_api["kakao_review"] = ""
-jeju_api["kakao_img"] = ""
+jeju_range.tail()
+
+jeju_range["kakao_grade"] = ''
+jeju_range["kakao_review"] = ''
+jeju_range["kakao_img"] = ''
+
+jeju_range[jeju_range['place_url'] != '']
 
 from selenium import webdriver
 import matplotlib.pyplot as plt
