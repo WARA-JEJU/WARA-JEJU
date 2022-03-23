@@ -38,8 +38,6 @@ def kakao_search_result(jeju_name):
                 params['page'] += 1
     return result
     import pandas as pd
-    
-from tqdm.notebook import tqdm # python 진행률 프로세스바
 
 import pandas as pd
 from tqdm.notebook import tqdm # python 진행률 프로세스바
@@ -112,28 +110,7 @@ def kakao_crawling():
           driver.quit()
           
 jeju_kakao_crawling = kakao_crawling()
-jeju_kakao_crawling.head(2)
-
-import json
-import urllib
-import requests
-# REST 키
-client_key = 'xzjv8j9BbPlDkjv3L4cP'
-client_secret = 'qXSjpcpeln'
-# 헤더
-headers = {"X-Naver-Client-Id" : client_key, 
-           "X-Naver-Client-Secret" : client_secret}
-# 파라미터
-encText = urllib.parse.quote("제주 소리섬박물관")
-url = "https://openapi.naver.com/v1/search/local.json?query="+encText
-
-# GET을 이용하여 획득
-res = requests.get(url, headers=headers)
-# Json을 이용하여 해제
-doc = json.loads(res.text)
-# 200일 경우 정상
-res.status_code
-
+jeju_kakao_crawling.tall()
 
 import json
 import requests
@@ -159,7 +136,8 @@ def naver_search_result(jeju_name):
         result.extend(doc['item'])
         
     return result
-    import pandas as pd
+    
+import pandas as pd
 from tqdm.notebook import tqdm # python 진행률 프로세스바
 
 def navar_search_df():
