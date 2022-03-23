@@ -125,8 +125,7 @@ def naver_search_result(jeju_name):
     headers = {"X-Naver-Client-Id" : client_key, 
               "X-Naver-Client-Secret" : client_secret}
     # 파라미터
-    encText = urllib.parse.quote(f"{jeju_name}")
-    url = "https://openapi.naver.com/v1/search/local.json?query="+encText
+    url = "https://openapi.naver.com/v1/search/local.json?query="+jeju_name
 
     # GET을 이용하여 획득
     res = requests.get(url, headers=headers)
@@ -141,16 +140,31 @@ import pandas as pd
 from tqdm.notebook import tqdm # python 진행률 프로세스바
 
 def navar_search_df():
-    results = []
-    for idx, row in tqdm(jeju_kakao_crawling.iterrows()):
-        r = pd.DataFrame(kakao_search_result(row['업종명']))
-        jeju_kakao_crawling['address'][idx] = r['address']
-        jeju_kakao_crawling['x'][idx] = r['mapx']
-        jeju_kakao_crawling['y'][idx] = r['mapy']
-        jeju_kakao_crawling['plase_url'][idx] = r['link']
-        results.append(r.copy())
-    return pd.concat(results).reset_index(drop=True)
+    category = ['address', 'mapx', 'mapy', 'link']
+    for idx, row in tqdm(jeju_range.iterrows()):
+        print('업소명 = 제주도 ' + row['업소명'])
+        r = pd.DataFrame(naver_search_result('제주도' + row['업소명']))
+        for bowl in category:
+          try:
+            print(bowl +' = ' +  r[bowl][0])
+            if bowl == 'mapx':
+              jeju_range['x'][idx] = r[bowl][0]
+            elif  bowl == 'mapy':
+              jeju_range['y'][idx] = r[bowl][0]
+            elif  bowl == 'link':
+              jeju_range['plase_url'][idx] = r[bowl][0]
+            else:
+              jeju_range[bowl][idx] = r[bowl][0]
+          except:
+            if bowl == 'mapx':
+              jeju_range['x'][idx] = ''
+            elif  bowl == 'mapy':
+              jeju_range['y'][idx] = ''
+            elif  bowl == 'link':
+              jeju_range['plase_url'][idx] = ''
+            else:
+              jeju_range[bowl][idx] = ''
+    return pd.DataFrame(jeju_range)
     
 jeju_naver_api = navar_search_df()
-
-jeju_naver_api.head(2)
+jeju_naver_api.tail()
