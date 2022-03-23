@@ -42,7 +42,6 @@ def kakao_search_result(jeju_name):
             else:
                 params['page'] += 1
     return result
-    import pandas as pd
 
 import pandas as pd
 from tqdm.notebook import tqdm # python 진행률 프로세스바
@@ -82,7 +81,7 @@ import matplotlib.pyplot as plt
 import time
 
 def kakao_crawling():
-  for idx,i in tqdm(jeju_api.iterrows()):
+  for idx,i in tqdm(jeju_range.iterrows()):
       time.sleep(0.7)
       driver = webdriver.Chrome("driver/chromedriver") # 크롬 드라이버 경로 지정 
       url = i["place_url"]
@@ -91,11 +90,11 @@ def kakao_crawling():
       #grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_score > span.color_b2 > span:nth-child(1)")
       grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_score > span:nth-child(1) > span:nth-child(1)")
       kakao_grade = grade.text
-      jeju_api["kakao_grade"][idx] = kakao_grade
+      jeju_range["kakao_grade"][idx] = kakao_grade
 
       review = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_review > span > span:nth-child(1)")
       kakao_review = review.text
-      jeju_api["kakao_review"][idx] = kakao_review
+      jeju_range["kakao_review"][idx] = kakao_review
 
       try:
           image = driver.find_element_by_css_selector("#mArticle > div.cont_photo > ul > li:nth-child(1) > a > span")
@@ -108,15 +107,15 @@ def kakao_crawling():
       else:
           image = image.get_attribute("style")[23:-3]
           kakao_img = "https:" + image
-          jeju_api["kakao_img"][idx] = kakao_img
+          jeju_range["kakao_img"][idx] = kakao_img
 
           #with open("Final_pro/img/{}.jpg".format(name), "wb") as f:
           #    f.write(response.content)
 
           driver.quit()
           
-jeju_kakao_crawling = kakao_crawling()
-jeju_kakao_crawling.tall()
+kakao_crawling()
+jeju_range.tall()
 
 ## 크롬드라이버 크롤링 End
 
@@ -187,8 +186,8 @@ def navar_search_df():
 #def tm128_to_wgs84(x, y):
 #   return transform( Proj(**TM128), Proj(**WGS84), x, y )
    
-jeju_naver_api = navar_search_df()
-jeju_naver_api.tail()
+navar_search_df()
+jeju_range.tail()
 
 ## 네이버 TM128 좌표 조회 API End
 
@@ -238,8 +237,8 @@ def navar_image_df():
               break
     return pd.DataFrame(jeju_range)
     
-jeju_naver_api = navar_image_df()
-jeju_naver_api.tail()
+navar_image_df()
+jeju_range.tail()
 
 ## 네이버 이미지 조회 API End
 
