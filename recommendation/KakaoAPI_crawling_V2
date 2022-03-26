@@ -50,19 +50,21 @@ from tqdm.notebook import tqdm # python 진행률 프로세스바
 def kakao_search_df():
     category = ['address_name', 'x', 'y', 'place_url']
     for idx, row in tqdm(jeju_range.iterrows()):
-        print('상호명 = 제주도 ' + row['상호명'])
-        r = pd.DataFrame(kakao_search_result('제주도' + row['상호명']))
-        for bowl in category:
-          try:
-            print(bowl +' = ' +  r[bowl][0])
-            if bowl == 'address_name':
-              if jeju_range['address'][idx] != '' or jeju_range['address'][idx].isna() == False:
-                jeju_range['address'][idx] = r[bowl][0]
-            else:
-              if jeju_range[bowl][idx] != '' or jeju_range[bowl][idx].isna() == False:
-                jeju_range[bowl][idx] = r[bowl][0]
-          except:
-            break
+        if row['place_url'] == '' or pd.isna(row['place_url']):
+          print("제주도 %s (%d건 진행중)" % (row['상호명'],idx))
+          r = pd.DataFrame(kakao_search_result('제주도' + row['상호명']))
+          for bowl in category:
+            try:
+              if bowl == 'address_name':
+                if row['address'] == '' or pd.isna(row['address']):
+                  row['address'] = r[bowl][0]
+              else:
+                if row[bowl] == '' or pd.isna(row[bowl]):
+                  print('기존 = %s, 새로운 = %s' % (row[bowl], r[bowl][0]))
+                  row[bowl] = r[bowl][0]
+            except:
+              break
+          print(row)
     return pd.DataFrame(jeju_range)
 
 jeju_range = kakao_search_df()
