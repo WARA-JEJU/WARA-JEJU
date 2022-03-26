@@ -5,10 +5,11 @@
 
 import pandas as pd
 
-jeju_range = pd.read_csv("/제주특별자치도_숙박업현황_01_02_2020.csv", encoding="CP949")
-jeju_range['address'] = ''      # 도로명 Data
-jeju_range['x'] = ''            # 경도 Data
-jeju_range['y'] = ''            # 위도 Data
+jeju_range = pd.read_csv("/제주특별자치도_숙박_병합.csv", encoding="CP949")
+jeju_range = jeju_range.rename(columns={'도로명주소':'address', '위도':'y', '경도':'x'})
+#jeju_range['address'] = ''      # 도로명 Datas
+#jeju_range['x'] = ''            # 경도 Data
+#jeju_range['y'] = ''            # 위도 Data
 jeju_range['place_url'] = ''    # 카카오 Map URL Data
 jeju_range['thumbnail'] = ''    # 썸네일 Image Url Data
 jeju_range['image_link'] = ''   # Image Url Data
@@ -49,22 +50,26 @@ from tqdm.notebook import tqdm # python 진행률 프로세스바
 def kakao_search_df():
     category = ['address_name', 'x', 'y', 'place_url']
     for idx, row in tqdm(jeju_range.iterrows()):
-        print('업소명 = 제주도 ' + row['업소명'])
-        r = pd.DataFrame(kakao_search_result('제주도' + row['업소명']))
+        print('상호명 = 제주도 ' + row['상호명'])
+        r = pd.DataFrame(kakao_search_result('제주도' + row['상호명']))
         for bowl in category:
           try:
             print(bowl +' = ' +  r[bowl][0])
             if bowl == 'address_name':
-              jeju_range['address'][idx] = r[bowl][0]
+              if jeju_range['address'][idx] != '' or jeju_range['address'][idx].isna() == False:
+                jeju_range['address'][idx] = r[bowl][0]
             else:
-              jeju_range[bowl][idx] = r[bowl][0]
+              if jeju_range[bowl][idx] != '' or jeju_range[bowl][idx].isna() == False:
+                jeju_range[bowl][idx] = r[bowl][0]
           except:
             break
     return pd.DataFrame(jeju_range)
-    
-kakao_search_df()
+
+jeju_range = kakao_search_df()
 
 jeju_range.tail()
+
+jeju_range.to_csv('/제주특별자치도_숙박_병합V2.csv',index=False) ## 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
 
 jeju_range["kakao_grade"] = ''
 jeju_range["kakao_review"] = ''
@@ -74,8 +79,7 @@ jeju_range[jeju_range['place_url'] != '']
 
 ## 카카오 경도, 위도, 리뷰 링크 조회 API End
 
-## 크롬드라이버 크롤링 Start
-
+#
 from selenium import webdriver
 import matplotlib.pyplot as plt
 import time
@@ -83,7 +87,7 @@ import time
 def kakao_crawling():
   for idx,i in tqdm(jeju_range.iterrows()):
       time.sleep(0.7)
-      driver = webdriver.Chrome("driver/chromedriver") # 크롬 드라이버 경로 지정 
+      driver = webdriver.Chrome("driver/chromedriver") # 크롬 드라이버 경로 지정
       url = i["place_url"]
       driver.implicitly_wait(8)
       driver.get(url)
@@ -98,7 +102,7 @@ def kakao_crawling():
 
       try:
           image = driver.find_element_by_css_selector("#mArticle > div.cont_photo > ul > li:nth-child(1) > a > span")
-          
+
       except:
           name = str(idx) + "_" + i["place_name"]
           plt.savefig(f"Final_pro/error/idx_{name}.png")
@@ -113,9 +117,10 @@ def kakao_crawling():
           #    f.write(response.content)
 
           driver.quit()
-          
+
 kakao_crawling()
 jeju_range.tall()
+# 크롬드라이버 크롤링 Start
 
 ## 크롬드라이버 크롤링 End
 
