@@ -160,30 +160,30 @@ import pandas as pd
 from tqdm.notebook import tqdm # python 진행률 프로세스바
 
 def navar_search_df():
-    category = ['address', 'mapx', 'mapy', 'link']
+    category = ['address', 'mapx', 'mapy']
+    results = []
     for idx, row in tqdm(jeju_range.iterrows()):
-        if row['x'] == '':
-          print('업소명 = 제주도 ' + row['업소명'])
-          r = pd.DataFrame(naver_search_result('제주도' + row['업소명']))
+        if row['x'] == '' or pd.isna(row['x']):
+          print("제주도 %s (%d건 진행중)" % (row['상호명'],idx))
+          r = pd.DataFrame(naver_search_result('제주도' + row['상호명']))
           for bowl in category:
             try:
-              print(bowl +' = ' +  r[bowl][0])
               if bowl == 'mapx':
-                jeju_range['x'][idx] = r[bowl][0]
+                if row['x'] == '' or pd.isna(row['x']):
+                  print('기존 = %s, 새로운 = %s (%s)' % (row[bowl], r[bowl][0], bowl))
+                  row['x'] = r[bowl][0]
               elif  bowl == 'mapy':
-                jeju_range['y'][idx] = r[bowl][0]
-              #elif  bowl == 'link':
-              #  jeju_range['place_url'][idx] = r[bowl][0]
+                if row['y'] == '' or pd.isna(row['y']):
+                  print('기존 = %s, 새로운 = %s (%s)' % (row[bowl], r[bowl][0], bowl))
+                  row['y'] = r[bowl][0]
               else:
-                jeju_range[bowl][idx] = r[bowl][0]
+                if row[bowl] == '' or pd.isna(row[bowl]):
+                  print('기존 = %s, 새로운 = %s (%s)' % (row[bowl], r[bowl][0], bowl))
+                  row[bowl] = r[bowl][0]
             except:
               break
-            #finally:
-            #  if jeju_range['x'][idx] != '' and jeju_range['y'][idx] != '':
-            #    x,y = tm128_to_wgs84(jeju_range['x'][idx], jeju_range['y'][idx])
-            #    jeju_range['x'][idx] = x
-            #    jeju_range['y'][idx] = y
-    return pd.DataFrame(jeju_range)
+        results.append(row.copy())
+    return pd.DataFrame(results).reset_index(drop=True)
  
 #from pyproj import Proj
 #from pyproj import transform
