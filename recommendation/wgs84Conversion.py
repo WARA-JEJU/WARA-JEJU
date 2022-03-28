@@ -55,4 +55,4 @@ def kakao_WGS84_df():
 
 
 jeju_range = kakao_WGS84_df()
-jeju_range.to_csv('./제주특별자치도_지리_병합_네이버_변환.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
+jeju_range.to_csv('./제주특별자치도_지리_병합_네이버_이미지_변환_크롤링.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
