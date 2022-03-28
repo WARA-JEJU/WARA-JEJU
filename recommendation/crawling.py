@@ -34,7 +34,7 @@ def kakao_crawling():
 
             try:
                 image = driver.find_element_by_css_selector("#mArticle > div.cont_photo.no_category > div.photo_area > ul > li.size_l > a")
-                print("이미지 = %s (%d건 진행중)" % (kakao_review, idx))
+                print("이미지 = %s (%d건 진행중)" % (image, idx))
             except:
                 kakao_img = ''
                 i["kakao_img"] = kakao_img
