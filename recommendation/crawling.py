@@ -43,7 +43,6 @@ def kakao_crawling():
                 
             try:
                 image = driver.find_element_by_css_selector("#mArticle > div.cont_photo.no_category > div.photo_area > ul > li.size_l > a")
-                print("이미지 = %s (%d건 진행중)" % (image, idx))
             except:
                 kakao_img = ''
                 i["kakao_img"] = kakao_img
@@ -52,6 +51,7 @@ def kakao_crawling():
                 image = image.get_attribute("style")[23:-3]
                 kakao_img = "https:" + image
                 i["kakao_img"] = kakao_img
+                print("이미지 = %s (%d건 진행중)" % (kakao_img, idx))
                 driver.quit()
                 
         results.append(i.copy())
