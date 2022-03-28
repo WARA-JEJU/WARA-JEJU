@@ -2,6 +2,8 @@
 !pip install pandas
 !pip install matplotlib
 !pip install pyproj
+#!apt-get update
+#!apt install chromium-chromedriver
 
 import pandas as pd
 
