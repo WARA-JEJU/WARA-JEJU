@@ -16,7 +16,12 @@ def kakao_crawling():
         if i["place_url"] != '' and not pd.isna(i['place_url']):
             print("경로 = %s (%d건 진행중)" % (i['place_url'], idx))
             time.sleep(0.7)
-            driver = webdriver.Chrome("./chromedriver.exe")  # 크롬 드라이버 경로 지정
+            options = webdriver.ChromeOptions()
+            options.add_argument('--headless')        # Head-less 설정
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            driver = webdriver.Chrome('chromedriver', options=options)
+            #driver = webdriver.Chrome("./chromedriver.exe")  # 크롬 드라이버 경로 지정
             url = i["place_url"]
             driver.implicitly_wait(8)
             driver.get(url)
