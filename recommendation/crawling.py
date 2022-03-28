@@ -13,7 +13,7 @@ jeju_range["kakao_img"] = ''
 def kakao_crawling():
     results = []
     for idx, i in jeju_range.iterrows():
-        if i["place_url"] != '' or not pd.isna(i['place_url']):
+        if i["place_url"] != '' and not pd.isna(i['place_url']):
             print("경로 = %s (%d건 진행중)" % (i['place_url'], idx))
             time.sleep(0.7)
             driver = webdriver.Chrome("./chromedriver.exe")  # 크롬 드라이버 경로 지정
