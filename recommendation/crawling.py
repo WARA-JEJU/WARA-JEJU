@@ -21,17 +21,26 @@ def kakao_crawling():
             driver.implicitly_wait(8)
             driver.get(url)
 
-            grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div:nth-child(1) > div.place_details > div > div > a:nth-child(3) > span.color_b")
+            try:
+                grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div:nth-child(1) > div.place_details > div > div > a:nth-child(3) > span.color_b")
+            except:
+                grade = ''
+                i["kakao_grade"] = grade
+            else:
+                kakao_grade = grade.text
+                i["kakao_grade"] = kakao_grade
+                print("평점 = %s (%d건 진행중)" % (kakao_grade, idx))
 
-            kakao_grade = grade.text
-            i["kakao_grade"] = kakao_grade
-            print("평점 = %s (%d건 진행중)" % (kakao_grade, idx))
-
-            review = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div:nth-child(1) > div.place_details > div > div > a:nth-child(5) > span")
-            kakao_review = review.text
-            i["kakao_review"] = kakao_review
-            print("리뷰 = %s (%d건 진행중)" % (kakao_review, idx))
-
+            try:
+                review = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div:nth-child(1) > div.place_details > div > div > a:nth-child(5) > span")
+            except:
+                review = ''
+                i["kakao_review"] = review
+            else:
+                kakao_review = review.text
+                i["kakao_review"] = kakao_review
+                print("평점 = %s (%d건 진행중)" % (kakao_review, idx))
+                
             try:
                 image = driver.find_element_by_css_selector("#mArticle > div.cont_photo.no_category > div.photo_area > ul > li.size_l > a")
                 print("이미지 = %s (%d건 진행중)" % (image, idx))
@@ -39,12 +48,12 @@ def kakao_crawling():
                 kakao_img = ''
                 i["kakao_img"] = kakao_img
                 driver.quit()
-
             else:
                 image = image.get_attribute("style")[23:-3]
                 kakao_img = "https:" + image
                 i["kakao_img"] = kakao_img
                 driver.quit()
+                
         results.append(i.copy())
     return pd.DataFrame(results).reset_index(drop=True)
 
