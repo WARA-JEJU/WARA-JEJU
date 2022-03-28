@@ -39,7 +39,7 @@ def kakao_crawling():
             else:
                 kakao_review = review.text
                 i["kakao_review"] = kakao_review
-                print("평점 = %s (%d건 진행중)" % (kakao_review, idx))
+                print("리뷰 = %s (%d건 진행중)" % (kakao_review, idx))
                 
             try:
                 image = driver.find_element_by_css_selector("#mArticle > div.cont_photo.no_category > div.photo_area > ul > li.size_l > a")
