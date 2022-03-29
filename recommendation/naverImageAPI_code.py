@@ -12,8 +12,8 @@ def naver_image_result(jeju_name):
     result = []
 
     # REST 키
-    client_key = 'xzjv8j9BbPlDkjv3L4cP'
-    client_secret = 'qXSjpcpeln'
+    client_key = 'rpUjPR07Z_lq_zcln2nX' #rpUjPR07Z_lq_zcln2nX,xzjv8j9BbPlDkjv3L4cP
+    client_secret = 'n6xR0YpYs4'        #n6xR0YpYs4, qXSjpcpeln
     # 헤더
     headers = {"X-Naver-Client-Id": client_key,
                "X-Naver-Client-Secret": client_secret}
