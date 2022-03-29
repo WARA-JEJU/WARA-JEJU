@@ -3,10 +3,9 @@ import pandas as pd
 from selenium import webdriver
 import time
 
-jeju_range = read_csv("./제주특별자치도_업체_병합_case1_네이버_이미지_변환.csv", encoding="UTF-8")
+jeju_range = read_csv("./제주특별자치도_음식_병합_case1_네이버_이미지_변환.csv", encoding="UTF-8")
 jeju_range["kakao_grade"] = ''
 jeju_range["kakao_review"] = ''
-jeju_range["kakao_img"] = ''
 
 
 # 크롬드라이버 크롤링 Start
@@ -15,7 +14,7 @@ def kakao_crawling():
     for idx, i in jeju_range.iterrows():
         if i["place_url"] != '' and not pd.isna(i['place_url']):
             print("경로 = %s (%d건 진행중)" % (i['place_url'], idx))
-            time.sleep(0.3)
+            #time.sleep(0.3)
             options = webdriver.ChromeOptions()
             options.add_argument('--headless')        # Head-less 설정
             options.add_argument('--no-sandbox')
@@ -27,8 +26,7 @@ def kakao_crawling():
             driver.get(url)
 
             try:
-                grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_score > span.color_b2 > span:nth-child(1)")
-
+                grade = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div:nth-child(1) > div.place_details > div > div > a:nth-child(3) > span.color_b")
             except:
                 grade = ''
                 i["kakao_grade"] = grade
@@ -38,26 +36,15 @@ def kakao_crawling():
                 print("평점 = %s (%d건 진행중)" % (kakao_grade, idx))
 
             try:
-                review = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div > div.place_details > div.location_evaluation > a.link_review > span > span:nth-child(1)")
-
+                review = driver.find_element_by_css_selector("#mArticle > div.cont_essential > div:nth-child(1) > div.place_details > div > div > a:nth-child(5) > span")
             except:
                 review = ''
                 i["kakao_review"] = review
+                driver.quit()
             else:
                 kakao_review = review.text
                 i["kakao_review"] = kakao_review
                 print("리뷰 = %s (%d건 진행중)" % (kakao_review, idx))
-            try:
-                image = driver.find_element_by_css_selector("#mArticle > div.cont_photo > ul > li > a > span")
-            except:
-                kakao_img = ''
-                i["kakao_img"] = kakao_img
-                driver.quit()
-            else:
-                image = image.get_attribute("style")[23:-3]
-                kakao_img = "https:" + image
-                i["kakao_img"] = kakao_img
-                print("이미지 = %s (%d건 진행중)" % (kakao_img, idx))
                 driver.quit()
                 
         results.append(i.copy())
@@ -65,5 +52,5 @@ def kakao_crawling():
 
 
 jeju_range = kakao_crawling()
-jeju_range.to_csv('./제주특별자치도_업체_병합_case1_네이버_이미지_변환_크롤링.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
+jeju_range.to_csv('./제주특별자치도_음식_병합_case1_네이버_이미지_변환_크롤링.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
 # 크롬드라이버 크롤링 End
