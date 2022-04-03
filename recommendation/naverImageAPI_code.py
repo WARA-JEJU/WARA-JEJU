@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from pandas import read_csv
 
-jeju_range = read_csv("./제주특별자치도_업체_병합_case2_네이버.csv", encoding="UTF-8")
+jeju_range = read_csv("./제주특별자치도_업체_병합_case1_네이버_이미지_변환_크롤링.csv", encoding="UTF-8")
 
 
 # 네이버 이미지 조회 API Start
@@ -53,4 +53,4 @@ def naver_image_df():
 
 
 jeju_range = naver_image_df()
-jeju_range.to_csv('./제주특별자치도_업체_병합_case2_네이버_이미지.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
+jeju_range.to_csv('./제주특별자치도_업체_병합_case1_네이버_이미지_변환_크롤링2.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
