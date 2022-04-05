@@ -5,11 +5,8 @@ import requests
 from urllib.request import urlopen
 from pandas import read_csv
 
-jeju_range = read_csv("./제주특별자치도_음식_병합.csv", encoding="CP949")
-jeju_range = jeju_range.rename(columns={'도로명주소': 'address', '위도': 'y', '경도': 'x', '업소명': '상호명'})
-jeju_range['place_url'] = ''  # 카카오 Map URL Data
-jeju_range['thumbnail'] = ''  # 썸네일 Image Url Data
-jeju_range['image_link'] = ''  # Image Url Data
+jeju_range = read_csv("./제주특별자치도_최종_병합.csv", encoding="utf-8")
+jeju_range = jeju_range.rename(columns={'address': 'address_name', '전화번호': 'phone'})
 
 
 # 카카오 경도, 경도, 리뷰 링크 조회 API Start
@@ -47,27 +44,21 @@ def kakao_search_result(jeju_name):
 
 
 def kakao_search_df():
-    category = ['address_name', 'x', 'y', 'place_url']
+    category = ['address_name', 'x', 'y', 'place_url', 'category_group_code', 'category_group_name', 'category_name', 'road_address_name']
     results = []
     for idx, row in jeju_range.iterrows():
-        if row['place_url'] == '' or pd.isna(row['place_url']):
-            print("제주도 %s (%d건 진행중)" % (row['상호명'], idx))
-            r = pd.DataFrame(kakao_search_result('제주도' + row['상호명']))
-            for bowl in category:
-                try:
-                    if bowl == 'address_name':
-                        if row['address'] == '' or pd.isna(row['address']):
-                            print('기존 = %s, 새로운 = %s (%s)' % (row[bowl], r[bowl][0], bowl))
-                            row['address'] = r[bowl][0]
-                    else:
-                        if row[bowl] == '' or pd.isna(row[bowl]):
-                            print('기존 = %s, 새로운 = %s (%s)' % (row[bowl], r[bowl][0], bowl))
-                            row[bowl] = r[bowl][0]
-                except:
-                    break
+        print("제주도 %s (%d건 진행중)" % (row['상호명'], idx))
+        r = pd.DataFrame(kakao_search_result('제주도' + row['상호명']))
+        for bowl in category:
+            try:
+                if r[bowl][0] != '' and not pd.isna(r[bowl][0]):
+                    print('기존 = %s, 새로운 = %s (%s)' % (row[bowl], r[bowl][0], bowl))
+                    row[bowl] = r[bowl][0]
+            except:
+                continue
         results.append(row.copy())
     return pd.DataFrame(results).reset_index(drop=True)
 
 
 jeju_range = kakao_search_df()
-jeju_range.to_csv('./제주특별자치도_음식_병합_KAKAO.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
+jeju_range.to_csv('./제주특별자치도_최종_병합2.csv', index=False)  # 구분자를 탭으로 하여 저장. 인덱스칼럼은 저장 안함.
