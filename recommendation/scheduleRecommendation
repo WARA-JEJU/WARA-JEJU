@@ -16,11 +16,13 @@ import pandas as pd
 import numpy as np
 import folium
 import matplotlib.pyplot as plt
-#import set_matplotlib_korean
 from itertools import permutations
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm.notebook import tqdm
+import urllib   
+
+plt.rc('font', family='NanumBarunGothic') 
 
 # 파일 Path 및 주요 키워드
 img_home = './data/220122/종합_이미지/'
