@@ -32,23 +32,7 @@ img_euclidean_path = './data/220124/_image_euclidean_dist.npy'
 # 음식점 CLIP 라벨 추가 버전
 rest_clip_label = './data/220126/_음식점_CLIP라벨링.xlsx'
 # 제주도 POI(장소) 데이터
-jeju_poi_path = './data/220124/_종합_POI_주변관광지_추가.xlsx'
-
-# 키워드 종류
-keywords = {'1' : '테마파크',
-            '2' : '감성',
-            '3' : '오션뷰',
-            '4' : '레포츠',
-            '5' : '맛집',
-            '6' : '체험',
-            '7' : '가족여행',
-            '8' : '분위기 좋은',
-            '9' : '가볼만한 곳'}
-
-# 카테고리 종류
-categories = {'1' : '관광명소',
-              '2' : '음식점',
-              '3' : '카페',}
+jeju_poi_path = '/content/제주특별자치도_최종_병합.csv'
 
 # 제주도 중심 좌표 (x, y)
 jeju_pos = [126.54536611348854, 33.38394921171469]
@@ -57,9 +41,10 @@ jeju_pos = [126.54536611348854, 33.38394921171469]
 default_pos = [126.49411256317285, 33.50589515795999]
 
 # 기본 컬럼
-columns = ['idx', 'keyword', 'address_name', 'category_group_name',
-       'category_name', 'id', 'place_name', 'x', 'y', 'rating', 'kind',
-       'content', 'adjacent_tour', 'adjacent_rest', 'adjacent_cafe']
+columns = ['업종', '상호명', '행정시', 'address_name', 'road_address_name', 'phone', 'y',
+       'x', 'place_url', 'thumbnail', 'image_link', 'kakao_grade',
+       'kakao_review', 'category_group_code', 'category_group_name',
+       'category_name', '기타']
        
        
 # 좌표간의 직선 거리 계산 함수
@@ -70,21 +55,21 @@ def cal_dist(pos1, pos2):
     
     
 # (content, 입력값)의 count_vector matrix 반환 함수
-# keyword : 입력받은 키워드 리스트
 # category : 입력받은 카테고리 리스트
 # content : 장소 정보의 'content' 컬럼
 #           - content : keyword + category_group_name
-def get_count_mat(keyword, category, content):
+def get_count_mat(category, content):
     # content를 이용해 count_vector 학습
     count_vect = CountVectorizer(min_df = 0, ngram_range=(1, 2))
     content_mat = count_vect.fit_transform(content)
-    input_result = keyword.copy()
-    input_result.append(category)
+    input_result = [category]
     # count vecter를 위해 각 단어의 공백(space) 삭제
     input_result = [input_str.replace(' ', '') for input_str in input_result]
+    print(input_result)
     # input_result를 이용해 count_vector 생성
     input_mat = count_vect.transform([' '.join(input_result)])
-
+    print(input_mat)
+    print(content_mat)
     return input_mat, content_mat
     
     
@@ -95,19 +80,18 @@ def get_cosine_sim(input_mat, sim_mat):
     return input_sim.reshape(-1, 1)
     
     
-# content(keyword + category_group_name) 기준 코사인 상위 Top20 반환
+# content(keyword + category_group_name) 기준 코사인 상위 Top5 반환
 # original : 코사인 유사도를 구할 원본 Dataframe
-# keywords : 입력받은 keyword 리스트
 # category : 코사인 유사도를 구할 카테고리명
-def get_cosine_top20(original, keywords, category):
+def get_cosine_top5(original, category):
     # 코사인 유사도 획득
-    input_mat, content_mat = get_count_mat(keywords, category, original['content'])
+    input_mat, content_mat = get_count_mat(category, original['기타'])
     input_sim = get_cosine_sim(input_mat, content_mat)
     # 코사인 유사도 컬럼 추가
     original['input_sim'] = input_sim
 
-    # 유사도 결과 Top 20 반환
-    return original.query(f'category_group_name == "{category}"').sort_values('input_sim', ascending=False).iloc[:20, :]
+    # 유사도 결과 Top 5 반환
+    return original.query(f'category_group_name == "{category}"').sort_values('input_sim', ascending=False).iloc[:5, :]
     
     
 # 관광명소를 추천하는 함수
@@ -250,42 +234,29 @@ def get_straight_dist(routes):
     
 past_poi = None
 past_pos = default_pos
-jeju_poi = pd.read_excel(jeju_poi_path, index_col=False)
+jeju_poi = pd.read_csv(jeju_poi_path, index_col=False)
+jeju_poi['기타'] = jeju_poi['상호명'] + ' ' + jeju_poi['category_name']
+jeju_poi = jeju_poi[jeju_poi['기타'].notnull()]
+jeju_poi = jeju_poi[jeju_poi['thumbnail'].notnull()]
 recommand_poi = pd.DataFrame(columns=columns)
 
 
-# 키워드 입력
-print('키워드를 선택해주시기 바랍니다. 복수 선택시 공백(space)으로 구분')
-print('-'*60)
-for key, value in keywords.items():
-    print('\t{}. {}'.format(key, value))
-print('-'*60)
-print('키워드 입력(번호 선택) : ', end ='')
-keyword_nums = input().split(' ')
-keyword_result = [keywords[key] for key in keyword_nums]
-print(keyword_nums, '-', keyword_result)
-print()
-
 while True:
     # 키워드 입력
-    print('카테고리를 선택해주시기 바랍니다. 단수 선택')
+    print('카테고리를 선택해주시기 바랍니다. 입력')
     print('-'*60)
-    for key, value in categories.items():
-        print('\t{}. {}'.format(key, value))
-    print('-'*60)
-    print('카테고리 입력(번호 선택, 종료시 0) : ', end ='')
-    category_num = input()
-    if category_num == '0':
+    print('카테고리 입력(입력, 종료시 0) : ', end ='')
+    category_result = str(input())
+    if category_result == '0':
         print('종료') # 종료 문구
         break
     else:
-        category_result = categories[category_num]
-        print(category_num, '-', category_result)
+        print(category_result)
     
     # 카페가 아닌 경우 코사인 유사도 확인
     if category_result != '카페':
         print('-'*60)
-        cosine_poi = get_cosine_top20(jeju_poi.copy(), keyword_result, category_result)
+        cosine_poi = get_cosine_top5(jeju_poi.copy(), category_result)
         if cosine_poi is not None:
             cosine_poi = cosine_poi.reset_index(drop=True)
         # 대표 장소 선택
@@ -294,13 +265,14 @@ while True:
         cnt = 1
         for idx, row in cosine_poi.iterrows():
             plt.subplot(5, 4, cnt)
-            img_path = img_home + row['category_group_name'] + '/'+str(row['id'])+'_'+row['place_name']+'.png'
+            img_path = urllib.request.urlretrieve(str(row['thumbnail']))[0]
+            print('img_path' + img_path)
             img = plt.imread(img_path)
             plt.imshow(img)
-            title = str(cnt) + '. ' + row['place_name'] + ':' + str(round(row['input_sim'], 3))
+            title = str(cnt) + '. ' + row['기타'] + ':' + str(round(row['input_sim'], 3))
             plt.gca().set_title(title)
             plt.axis(False)
-            img_info[str(cnt)] = [row['id'], row['place_name'], round(row['input_sim'], 3)]
+            img_info[str(cnt)] = [row['상호명'], round(row['input_sim'], 3)]
             cnt += 1
         plt.show()
         print('-'*60)
@@ -310,9 +282,9 @@ while True:
             print('\t{}. {}'.format(key, value))
         print('-'*60)
         print('입력(번호 선택) : ', end='')
-        cosine_num = int(input())
-        cosine_result = cosine_poi.iloc[cosine_num-1, :]
-        print(cosine_num, '-', cosine_result['place_name'])
+        cosine_num = input()
+        cosine_result = cosine_poi.iloc[int(cosine_num)-1, :]
+        print(cosine_num, '-', cosine_result['상호명'])
         print()
         
     # 관광지 추천
@@ -322,4 +294,5 @@ while True:
     else:
         recommand_poi = recommand_poi.append(recommand_site(jeju_poi, cosine_result['id'], category_result, past_pos, included))
     past_pos = [recommand_poi.iloc[-1]['x'], recommand_poi.iloc[-1]['y']]
+        
         
