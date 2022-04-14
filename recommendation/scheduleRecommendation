@@ -243,8 +243,6 @@ recommand_poi = pd.DataFrame(columns=columns)
 
 while True:
     # 키워드 입력
-    print('카테고리를 선택해주시기 바랍니다. 입력')
-    print('-'*60)
     print('카테고리 입력(입력, 종료시 0) : ', end ='')
     category_result = str(input())
     if category_result == '0':
@@ -257,36 +255,39 @@ while True:
     if category_result != '카페':
         print('-'*60)
         cosine_poi = get_cosine_top5(jeju_poi.copy(), category_result)
-        if cosine_poi is not None:
-            cosine_poi = cosine_poi.reset_index(drop=True)
-        # 대표 장소 선택
-        img_info = {}
-        plt.figure(figsize=(20, 25))
-        cnt = 1
-        for idx, row in cosine_poi.iterrows():
-            plt.subplot(5, 4, cnt)
-            img_path = urllib.request.urlretrieve(str(row['thumbnail']))[0]
-            print('img_path' + img_path)
-            img = plt.imread(img_path)
-            plt.imshow(img)
-            title = str(cnt) + '. ' + row['기타'] + ':' + str(round(row['input_sim'], 3))
-            plt.gca().set_title(title)
-            plt.axis(False)
-            img_info[str(cnt)] = [row['상호명'], round(row['input_sim'], 3)]
-            cnt += 1
-        plt.show()
-        print('-'*60)
-        print('대표 장소를 선택해주시기 바랍니다. 1개만 선택')
-        print('-'*60)
-        for key, value in img_info.items():
-            print('\t{}. {}'.format(key, value))
-        print('-'*60)
-        print('입력(번호 선택) : ', end='')
-        cosine_num = input()
-        cosine_result = cosine_poi.iloc[int(cosine_num)-1, :]
-        print(cosine_num, '-', cosine_result['상호명'])
-        print()
-        
+        print(cosine_poi['기타'].count() > 0)
+        if cosine_poi['기타'].count() == 0:
+          continue
+        else :
+          cosine_poi = cosine_poi.reset_index(drop=True)
+          # 대표 장소 선택
+          img_info = {}
+          plt.figure(figsize=(20, 25))
+          cnt = 1
+          for idx, row in cosine_poi.iterrows():
+              plt.subplot(5, 4, cnt)
+              img_path = urllib.request.urlretrieve(str(row['thumbnail']))[0]
+              print('img_path' + img_path)
+              img = plt.imread(img_path)
+              plt.imshow(img)
+              title = str(cnt) + '. ' + row['기타'] + ':' + str(round(row['input_sim'], 3))
+              plt.gca().set_title(title)
+              plt.axis(False)
+              img_info[str(cnt)] = [row['상호명'], round(row['input_sim'], 3)]
+              cnt += 1
+          plt.show()
+          print('-'*60)
+          print('대표 장소를 선택해주시기 바랍니다. 1개만 선택')
+          print('-'*60)
+          for key, value in img_info.items():
+              print('\t{}. {}'.format(key, value))
+          print('-'*60)
+          print('입력(번호 선택) : ', end='')
+          cosine_num = input()
+          cosine_result = cosine_poi.iloc[int(cosine_num)-1, :]
+          print(cosine_num, '-', cosine_result['상호명'])
+          print()
+          
     # 관광지 추천
     included = list(recommand_poi['id'])
     if category_result == '카페':
@@ -294,5 +295,4 @@ while True:
     else:
         recommand_poi = recommand_poi.append(recommand_site(jeju_poi, cosine_result['id'], category_result, past_pos, included))
     past_pos = [recommand_poi.iloc[-1]['x'], recommand_poi.iloc[-1]['y']]
-        
         
