@@ -99,7 +99,7 @@ def get_cosine_top5(original, category):
     original['input_sim'] = [round(x[0], 1) for x in input_sim]
 
     # 유사도 결과 Top 5 반환
-    return original.sort_values(['input_sim', 'kakao_grade', 'kakao_review'], ascending=False).iloc[:5, :]
+    return original[original['input_sim'] > 0.2].sort_values(['input_sim', 'kakao_grade', 'kakao_review'], ascending=False).iloc[:5, :]
     
     
 # 관광명소를 추천하는 함수
