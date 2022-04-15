@@ -14,7 +14,8 @@ import requests
 import folium
 import pandas as pd
 import numpy as np
-import folium
+import matplotlib.font_manager as fm
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from itertools import permutations
 from sklearn.feature_extraction.text import CountVectorizer
@@ -22,7 +23,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 from tqdm.notebook import tqdm
 import urllib   
 
+%config InlineBackend.figure_format = 'retina'
+ 
+!apt -qq -y install fonts-nanum
+fontpath = '/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf'
+font = fm.FontProperties(fname=fontpath, size=9)
 plt.rc('font', family='NanumBarunGothic') 
+mpl.font_manager._rebuild()
 
 # 파일 Path 및 주요 키워드
 img_home = './data/220122/종합_이미지/'
@@ -87,11 +94,12 @@ def get_cosine_top5(original, category):
     # 코사인 유사도 획득
     input_mat, content_mat = get_count_mat(category, original['기타'])
     input_sim = get_cosine_sim(input_mat, content_mat)
+    print(input_sim)
     # 코사인 유사도 컬럼 추가
-    original['input_sim'] = input_sim
+    original['input_sim'] = [round(x[0], 1) for x in input_sim]
 
     # 유사도 결과 Top 5 반환
-    return original.query(f'category_group_name == "{category}"').sort_values('input_sim', ascending=False).iloc[:5, :]
+    return original.sort_values(['input_sim', 'kakao_grade', 'kakao_review'], ascending=False).iloc[:5, :]
     
     
 # 관광명소를 추천하는 함수
@@ -267,10 +275,9 @@ while True:
           for idx, row in cosine_poi.iterrows():
               plt.subplot(5, 4, cnt)
               img_path = urllib.request.urlretrieve(str(row['thumbnail']))[0]
-              print('img_path' + img_path)
               img = plt.imread(img_path)
               plt.imshow(img)
-              title = str(cnt) + '. ' + row['기타'] + ':' + str(round(row['input_sim'], 3))
+              title = str(cnt) + '. ' + row['기타'] + ':' + str(round(row['input_sim'], 3)) + str(row['kakao_grade']) + ':' + str(row['kakao_review'])
               plt.gca().set_title(title)
               plt.axis(False)
               img_info[str(cnt)] = [row['상호명'], round(row['input_sim'], 3)]
