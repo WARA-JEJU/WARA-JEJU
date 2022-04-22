@@ -16,13 +16,11 @@ from pathlib import Path
 
 import django_heroku
 
-
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -34,7 +32,6 @@ SECRET_KEY = '7vquf6$&+$uqxjp&6vy0gk=@f3gx$dm9eed2#twbal1wu*y)7f'
 DEBUG = False
 
 ALLOWED_HOSTS = ['newbloggingapp.herokuapp.com']
-
 
 # Application definition
 
@@ -49,9 +46,11 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'crispy_forms',
     'ckeditor',
-    
-
-
+    'django_filters',
+    'rest_framework',
+    'ckeditor',
+    'ckeditor_uploader',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +84,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'web_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -95,7 +93,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -116,14 +113,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CKEDITOR_CONFIGS = {
-'default': {
-    'toolbar': 'full', #You can change this based on your requirements.
-    'width': 'auto',
-    
+    'default': {
+        'toolbar': 'full',  # You can change this based on your requirements.
+        'width': 'auto',
 
-          },
-    }
-
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -138,15 +133,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-STATIC_URL = '/static/'    
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = [
-    os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
-
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -156,7 +149,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'blog-home'
 
 LOGIN_URL = 'login'
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
