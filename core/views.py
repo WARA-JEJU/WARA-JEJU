@@ -5,7 +5,7 @@ from . import forms
 
 # Create your views here.
 def home(request):
-    return render(request, 'index2.html')
+    return render(request, 'home.html')
 
 
 def sign_up(request):
