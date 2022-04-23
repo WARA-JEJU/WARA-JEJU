@@ -17,16 +17,21 @@
 					<p>바쁜 사람들을 위해 선택한 일정 최적의 경로 추천 시스템</p>
 					<br>
 					<br>
-					<form method="post" action="#">
+					<form method="get">
 						<div class="row gtr-50">
 							<div class="col-6 col-12-small">
 								<input name="name" placeholder="제주 스타벅스" type="text" />
 							</div>
 							<div class="col-6 col-12-small">
-								<input name="name" placeholder="제주 스타벅스" type="text" />
+								<select name="select">
+									<option>음식점</option>
+									<option>카페</option>
+									<option>숙박</option>
+									<option>액티비티</option>
+								</select>
 							</div>
 							<div class="col-12">
-								<a href="#" class="form-button-submit button icon solid fa-envelope">검색하기</a>
+								<button class="form-button-submit button icon solid fa-envelope">검색하기</button>
 							</div>
 						</div>
 					</form>
@@ -48,66 +53,6 @@
 							<li><a class="icon solid fa-sitemap" href="no-sidebar.html"><span>4일차</span></a></li>
 						</ul>
 					</nav>
-				</div>
-			</section>
-		<!-- Features -->
-			<section id="features">
-				<div class="container">
-					<div class="row aln-center">
-						<div class="col-4 col-6-medium col-12-small">
-							<!-- Feature -->
-							<section>
-								<header>
-									<h3>1등, 스타벅스 제주점</h3>
-								</header>
-								<a href="#" class="image featured"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-								<p><strong>평점 : 5.0</strong></p>
-								<p><strong>리뷰 : 5.0</strong></p>
-								<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-							</section>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<!-- Feature -->
-							<section>
-								<header>
-									<h3>1등, 스타벅스 제주점</h3>
-								</header>
-								<a href="#" class="image featured"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-								<p><strong>평점 : 5.0</strong></p>
-								<p><strong>리뷰 : 5.0</strong></p>
-								<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-							</section>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<!-- Feature -->
-							<section>
-								<header>
-									<h3>1등, 스타벅스 제주점</h3>
-								</header>
-								<a href="#" class="image featured"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-								<p><strong>평점 : 5.0</strong></p>
-								<p><strong>리뷰 : 5.0</strong></p>
-								<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-							</section>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<!-- Feature -->
-							<section>
-								<header>
-									<h3>1등, 스타벅스 제주점</h3>
-								</header>
-								<a href="#" class="image featured"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-								<p><strong>평점 : 5.0</strong></p>
-								<p><strong>리뷰 : 5.0</strong></p>
-								<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-							</section>
-						</div>
-						<div class="col-12">
-							<ul class="actions">
-								<li><a href="#" class="button icon solid fa-file">경로 추천</a></li>
-							</ul>
-						</div>
-					</div>
 				</div>
 			</section>
 			<!-- Main -->
@@ -192,6 +137,13 @@
 									</li>
 								</ul>
 							</section>
+							<section>
+								<div class="col-12">
+									<ul class="actions">
+										<li><a href="#" class="button icon solid fa-file">경로 추천</a></li>
+									</ul>
+								</div>
+							</section>
 						</div>
 					</div>
 				</div>
@@ -204,5 +156,19 @@
 		<script src="{% static "js/breakpoints.min.js" %}"></script>
 		<script src="{% static "js/util.js" %}"></script>
 		<script src="{% static "js/main.js" %}"></script>
+		<script>
+			function callSearch(){
+				console.log('위지훈');
+				$.ajax({
+					data: {email: 'example@example.com'},
+					url: 'emailcheck',
+					dataType: 'json',
+					success: function(data) {
+					 var result = data;
+					 return result;
+					}
+				});
+			}
+		</script>
 	</body>
 </html>
