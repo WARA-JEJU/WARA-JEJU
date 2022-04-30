@@ -20,14 +20,14 @@
 					<form method="get">
 						<div class="row gtr-50">
 							<div class="col-6 col-12-small">
-								<input name="name" placeholder="제주 스타벅스" type="text" />
+								<input name="name" placeholder="제주 스타벅스" type="text" value="{{ request.GET.name }}"/>
 							</div>
 							<div class="col-6 col-12-small">
-								<select name="select">
-									<option>음식점</option>
-									<option>카페</option>
-									<option>숙박</option>
-									<option>액티비티</option>
+								<select>
+									<option value="{{ request.select }}">음식점</option>
+									<option value="{{ request.select }}">카페</option>
+									<option value="{{ request.select }}">숙박</option>
+									<option value="{{ request.select }}">액티비티</option>
 								</select>
 							</div>
 							<div class="col-12">
@@ -61,89 +61,42 @@
 					<div class="row">
 						<div id="sidebar" class="col-4 col-12-medium">
 							<!-- Highlights -->
-							<section>
-								<ul class="divided">
-									<li>
-										<!-- Highlight -->
-										<article class="box highlight">
-											<header>
-												<h3><a href="#">1등, 제주 스타벅스</a></h3>
-											</header>
-											<a href="#" class="image left"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-											<p><strong>평점 : 5.0</strong></p>
-											<p><strong>리뷰 : 5.0</strong></p>
-											<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-											<ul class="actions">
-												<li><a href="#" class="button icon solid fa-file">일정추가</a></li>
-											</ul>
-										</article>
-									</li>
-								</ul>
-							</section>
-							<section>
-								<ul class="divided">
-									<li>
-										<!-- Highlight -->
-										<article class="box highlight">
-											<header>
-												<h3><a href="#">1등, 제주 스타벅스</a></h3>
-											</header>
-											<a href="#" class="image left"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-											<p><strong>평점 : 5.0</strong></p>
-											<p><strong>리뷰 : 5.0</strong></p>
-											<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-											<ul class="actions">
-												<li><a href="#" class="button icon solid fa-file">일정추가</a></li>
-											</ul>
-										</article>
-									</li>
-								</ul>
-							</section>
-							<section>
-								<ul class="divided">
-									<li>
-										<!-- Highlight -->
-										<article class="box highlight">
-											<header>
-												<h3><a href="#">1등, 제주 스타벅스</a></h3>
-											</header>
-											<a href="#" class="image left"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-											<p><strong>평점 : 5.0</strong></p>
-											<p><strong>리뷰 : 5.0</strong></p>
-											<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-											<ul class="actions">
-												<li><a href="#" class="button icon solid fa-file">일정추가</a></li>
-											</ul>
-										</article>
-									</li>
-								</ul>
-							</section>
-							<section>
-								<ul class="divided">
-									<li>
-										<!-- Highlight -->
-										<article class="box highlight">
-											<header>
-												<h3><a href="#">1등, 제주 스타벅스</a></h3>
-											</header>
-											<a href="#" class="image left"><img src="{% static "images/pic01.jpg" %}" alt="" /></a>
-											<p><strong>평점 : 5.0</strong></p>
-											<p><strong>리뷰 : 5.0</strong></p>
-											<p><strong>주소 : 개봉로 17나길 51-6</strong></p>
-											<ul class="actions">
-												<li><a href="#" class="button icon solid fa-file">일정추가</a></li>
-											</ul>
-										</article>
-									</li>
-								</ul>
-							</section>
-							<section>
-								<div class="col-12">
-									<ul class="actions">
-										<li><a href="#" class="button icon solid fa-file">경로 추천</a></li>
+							{% if cosine_pois %}
+								{% for cosine_poi in cosine_pois%}
+								{{cosine_poi}}
+								{{cosine_poi.forloop.counter}}
+								{{forloop.counter}}
+								<section>
+									<ul class="divided">
+										<li>
+											<!-- Highlight -->
+											<article class="box highlight">
+												<header>
+													<h3><a href="#">{{cosine_poi.상호명}}</a></h3>
+												</header>
+												<a href="#" class="image left"><img src="{{cosine_poi.thumbnail}}" alt="" /></a>
+												<p><strong>평점 : {{cosine_poi.kakao_grade}}</strong></p>
+												<p><strong>리뷰 : {{cosine_poi.kakao_review}}</strong></p>
+												<p><strong>도로명 : {{cosine_poi.road_address_name}}</strong></p>
+												<p><strong>지번 : {{cosine_poi.address_name}}</strong></p>
+												<ul class="actions">
+													<li><a href="#" class="button icon solid fa-file">일정추가</a></li>
+												</ul>
+											</article>
+										</li>
 									</ul>
-								</div>
-							</section>
+								</section>
+							{% endfor %}
+								<section>
+									<div class="col-12">
+										<ul class="actions">
+											<li><a href="#" class="button icon solid fa-file">경로 추천</a></li>
+										</ul>
+									</div>
+								</section>
+							{% else %}
+								<p>No polls are available.</p>
+							{% endif %}
 						</div>
 					</div>
 				</div>
