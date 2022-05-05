@@ -39,18 +39,6 @@
 					<nav id="nav">
 						<ul>
 							<li><a class="icon solid fa-home" href="index.html"><span>일정 계획</span></a></li>
-							<li>
-								<a href="#" class="icon fa-chart-bar"><span>1일차</span></a>
-								<ul>
-									<li><a href="#">스타벅스</a></li>
-									<li><a href="#">투썸</a></li>
-									<li><a href="#">신라호텔</a></li>
-									<li><a href="#">제주 삼겹살</a></li>
-								</ul>
-							</li>
-							<li><a class="icon solid fa-cog" href="left-sidebar.html"><span>2일차</span></a></li>
-							<li><a class="icon solid fa-retweet" href="right-sidebar.html"><span>3일차</span></a></li>
-							<li><a class="icon solid fa-sitemap" href="no-sidebar.html"><span>4일차</span></a></li>
 						</ul>
 					</nav>
 				</div>
@@ -78,7 +66,7 @@
 												<p><strong>지번 : {{cosine_poi.address_name}}</strong></p>
 												<div>
 													<a href="{{cosine_poi.place_url}}" target='_blank' class="button icon solid fa-file" style="width: 47%;display: inline-block;margin-right: 5%;">카카오맵</a>
-													<a href="#" class="button icon solid fa-file"  style="width: 47%;display: inline-block;">일정추가</a>
+													<a href="javascript:setCoordinate({{cosine_poi.x}}, {{cosine_poi.y}}, '{{cosine_poi.상호명}}')" class="button icon solid fa-file"  style="width: 47%;display: inline-block;">일정추가</a>
 												</div>
 											</article>
 										</li>
@@ -108,17 +96,18 @@
 		<script src="{% static "js/util.js" %}"></script>
 		<script src="{% static "js/main.js" %}"></script>
 		<script>
-			function callSearch(){
-				console.log('위지훈');
-				$.ajax({
-					data: {email: 'example@example.com'},
-					url: 'emailcheck',
-					dataType: 'json',
-					success: function(data) {
-					 var result = data;
-					 return result;
-					}
-				});
+			function setCoordinate(x, y, 상호명){
+				console.log(x)
+				console.log(y)
+				console.log(상호명)
+				if(x != '' && y != '' && 상호명 != ''){
+					var html = "";
+					html += '<a class="link depth-0" href="index.html" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><span class="indent-0"></span>일정 계획</a>';
+					//html += 상호명;
+					//html += "</a></li>";
+					$("nav").append(html);
+					//<a class="link depth-0" href="index.html" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><span class="indent-0"></span>일정 계획</a>
+				}
 			}
 		</script>
 	</body>
