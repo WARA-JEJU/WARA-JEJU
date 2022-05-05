@@ -63,9 +63,6 @@
 							<!-- Highlights -->
 							{% if cosine_pois %}
 								{% for cosine_poi in cosine_pois%}
-								{{cosine_poi}}
-								{{cosine_poi.forloop.counter}}
-								{{forloop.counter}}
 								<section>
 									<ul class="divided">
 										<li>
@@ -75,13 +72,14 @@
 													<h3><a href="#">{{cosine_poi.상호명}}</a></h3>
 												</header>
 												<a href="#" class="image left"><img src="{{cosine_poi.thumbnail}}" alt="" /></a>
-												<p><strong>평점 : {{cosine_poi.kakao_grade}}</strong></p>
-												<p><strong>리뷰 : {{cosine_poi.kakao_review}}</strong></p>
+												<p><strong>평점 : {{cosine_poi.kakao_grade}}점</strong></p>
+												<p><strong>리뷰 : {{cosine_poi.kakao_review}}건수</strong></p>
 												<p><strong>도로명 : {{cosine_poi.road_address_name}}</strong></p>
 												<p><strong>지번 : {{cosine_poi.address_name}}</strong></p>
-												<ul class="actions">
-													<li><a href="#" class="button icon solid fa-file">일정추가</a></li>
-												</ul>
+												<div>
+													<a href="{{cosine_poi.place_url}}" target='_blank' class="button icon solid fa-file" style="width: 47%;display: inline-block;margin-right: 5%;">카카오맵</a>
+													<a href="#" class="button icon solid fa-file"  style="width: 47%;display: inline-block;">일정추가</a>
+												</div>
 											</article>
 										</li>
 									</ul>

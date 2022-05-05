@@ -73,13 +73,24 @@ def home(request):
                 # 코사인 유사도 확인
                 cosine_poi = get_cosine_top5(jeju_poi.copy(), name).reset_index(drop=True)
                 # row['thumbnail'],o row['kakao_grade'], row['kakao_review'], row['기타'], row['상호명'], row['input_sim']
+                key = zip(value for value in cosine_poi.to_dict('list').items())
+
+                print(key)
+                #for a, b, c, d, e, f, in key:
+                #    print(a)
+
+                #print(key = value for key, value in cosine_poi.to_dict('list').items())
+
+                #print(zip(value for key, value in cosine_poi.to_dict('list').items()))
+                json_records = cosine_poi.to_json(force_ascii=False, orient ='records')
+                data = json.loads(json_records)
 
                 context = {
-                    "cosine_pois": cosine_poi.to_dict('list'),
+                    "cosine_pois": data,
                 }
 
-        except AttributeError:
-            print('AttributeError')
+        except exception:
+           print(exception)
         finally:
             print(context)
             return render(request, 'index.html', context)
