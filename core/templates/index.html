@@ -22,14 +22,14 @@
 							<div class="col-6 col-12-small">
 								<input name="name" placeholder="제주 스타벅스" type="text" value="{{ request.GET.name }}"/>
 							</div>
-							<div class="col-6 col-12-small">
-								<select>
-									<option value="{{ request.select }}">음식점</option>
-									<option value="{{ request.select }}">카페</option>
-									<option value="{{ request.select }}">숙박</option>
-									<option value="{{ request.select }}">액티비티</option>
-								</select>
-							</div>
+<!--							<div class="col-6 col-12-small">-->
+<!--								<select>-->
+<!--									<option value="{{ request.select }}">음식점</option>-->
+<!--									<option value="{{ request.select }}">카페</option>-->
+<!--									<option value="{{ request.select }}">숙박</option>-->
+<!--									<option value="{{ request.select }}">액티비티</option>-->
+<!--								</select>-->
+<!--							</div>-->
 							<div class="col-12">
 								<button class="form-button-submit button icon solid fa-envelope">검색하기</button>
 							</div>
@@ -74,11 +74,9 @@
 								</section>
 							{% endfor %}
 								<section>
-									<div class="col-12">
-										<ul class="actions">
-											<li><a href="#" class="button icon solid fa-file">경로 추천</a></li>
-										</ul>
-									</div>
+									<form id="routeRecommendation" method="get">
+										<button class="form-button-submit button icon solid fa-envelope">경로추천</button>
+									</form>
 								</section>
 							{% else %}
 								<p>No polls are available.</p>
@@ -97,16 +95,22 @@
 		<script src="{% static "js/main.js" %}"></script>
 		<script>
 			function setCoordinate(x, y, 상호명){
-				console.log(x)
-				console.log(y)
-				console.log(상호명)
 				if(x != '' && y != '' && 상호명 != ''){
 					var html = "";
-					html += '<a class="link depth-0" href="index.html" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><span class="indent-0"></span>일정 계획</a>';
-					//html += 상호명;
-					//html += "</a></li>";
+					html += '<a class="link depth-0" href="javascript:;" onclick="$(this).remove();" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><span class="indent-0"></span>';
+					html += 상호명;
+					html += '</a>';
 					$("nav").append(html);
-					//<a class="link depth-0" href="index.html" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><span class="indent-0"></span>일정 계획</a>
+
+					html = "";
+					html += "<input type='hidden' value='";
+					html += x;
+					html += ", ";
+					html += y;
+					html += ", ";
+					html += 상호명;
+					html += "'>";
+					$("#routeRecommendation").append(html);
 				}
 			}
 		</script>
