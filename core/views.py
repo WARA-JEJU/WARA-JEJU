@@ -173,3 +173,20 @@ def recommendation(request):
             return redirect('/')
 
     return render(request, 'sign_up.html', {'form': form})
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def route_recommend(request):
+    return render(request, 'core/route_recommend.html')
+
+# map.html 페이지를 부르는 map 함수
+def map(request):
+    return render(request, 'core/map.html')
+
+
+
+
+
+
