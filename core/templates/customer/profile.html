@@ -1,128 +1,115 @@
-{% extends 'customer/base.html' %}
-{% load bootstrap4 %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>profile</title>
+	<br>
+	<h2 style="text-align:center;">일정 계획</h2>
+</head>
+<body>
+<br>
+<h3 style="color: #ED786A;">1일차</h3>
 
-{% block head %}
-{% include 'load_firebase.html' %}
+	<!-- 이미지 지도를 표시할 div 입니다 -->
+	<div id="map" style="width:100%;height:350px;"></div>
 
-{% comment %}
-<script type="module">
-    <!--  Import the functions you need from the SDKs you need-->
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { auth } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js'
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=	2abb564f7a7f2b1790d4cf786a23c196"></script>
+	<script>
 
-    // https://firebase.google.com/docs/web/setup#available-libraries
-
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-    apiKey: "AIzaSyBG8jZpj3EXjOvxEfTPb1gIgOpSQYdhD7g",
-    authDomain: "fast-parcel-77b12.firebaseapp.com",
-    projectId: "fast-parcel-77b12",
-    storageBucket: "fast-parcel-77b12.appspot.com",
-    messagingSenderId: "156258244573",
-    appId: "1:156258244573:web:d62952ad6a18e8e2fd8834"
+	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+    mapOption = {
+        center: new kakao.maps.LatLng(33.5070789578184, 126.592769004244), // 지도의 중심좌표
+        level: 8 // 지도의 확대 레벨
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-</script>
-{% endcomment %}
+    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+    // 마커를 표시할 위치와 title 객체 배열입니다
+	var positions = [
+    	{
+        	title: '제주국제공항',
+        	latlng: new kakao.maps.LatLng(33.5070789578184, 126.492769004244)
+    	},
+    	{
+        	title: '용두암',
+        	latlng: new kakao.maps.LatLng(33.5161106216721, 126.511957109074)
+    	},
+    	{
+        	title: '제주교육박물관',
+        	latlng: new kakao.maps.LatLng(33.4946731533432, 126.537972321229)
+    	},
+    	{
+        	title: '돈대표',
+        	latlng: new kakao.maps.LatLng(33.5416952747898, 126.6728294651)
+    	}
+	];
+
+	// 마커 이미지의 이미지 주소입니다
+	var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+
+	for (var i = 0; i < positions.length; i ++) {
+
+    	// 마커 이미지의 이미지 크기 입니다
+    	var imageSize = new kakao.maps.Size(24, 35);
+
+    	// 마커 이미지를 생성합니다
+    	var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+
+    	// 마커를 생성합니다
+    	var marker = new kakao.maps.Marker({
+        	map: map, // 마커를 표시할 지도
+        	position: positions[i].latlng, // 마커를 표시할 위치
+        	title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+        	image : markerImage // 마커 이미지
+    	});
+
+    // 선을 구성하는 좌표 배열입니다. 이 좌표들을 이어서 선을 표시합니다
+	var linePath = [
+
+	];
+
+	// 지도에 표시할 선을 생성합니다
+	var polyline = new kakao.maps.Polyline({
+    	path: linePath, // 선을 구성하는 좌표배열 입니다
+    	strokeWeight: 5, // 선의 두께 입니다
+    	strokeColor: '#ED786A', // 선의 색깔입니다
+    	strokeOpacity: 0.9, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+    	strokeStyle: 'dashed' // 선의 스타일입니다
+	});
+
+	// 지도에 선을 표시합니다
+	polyline.setMap(map);
+    	}
+	</script>
+	<br>
+	<br>
 
 
 
-{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<style type="text/css">
+    tbody > tr {cursor: pointer;}
+</style>
+{% endblock css %}
 
-{% block main %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <th>구분</th><th>번호</th><th>장소명</th><th>평점</th><th>리뷰</th>
+    </thead>
+    <tr><td></td><td>1</td><td>{{name}}<td>{{grade}}</td><td>{{review}}</td></tr>
+    <tr><td></td><td>2</td><td>용두암<td>4.9</td><td>70건</td></tr>
+    <tr><td></td><td>3</td><td>제주교육박물관<td>3.2</td><td>136건</td></tr>
+	<tr><td></td><td>4</td><td>돈대표<td>4.4</td><td>305건</td></tr>
+</table>
 
-<b class="text-secondary">Basic Information</b>
-<div class="card bg-white mt-2 mb-5">
-    <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% bootstrap_form user_form %}
-            {% bootstrap_form customer_form %}
-            <input type="hidden" name="action" value="update_profile">
-            <button type="submit" class="btn btn-warning">Save</button>
-        </form>
-    </div>
-</div>
+<!-- 버튼 click 시 url 이동 -->
+<a href="/"><button class="btn btn-primary" type="button">경로 탐색</button></a>
+{% endblock content %}
 
-<b class="text-secondary">Change Password</b>
-<div class="card bg-white mt-2 mb-5">
-    <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% bootstrap_form password_form %}
-            <input type="hidden" name="action" value="update_password">
-            <button type="submit" class="btn btn-warning">Save</button>
-        </form>
-    </div>
-</div>
+<h3><a href="#">{{cosine_poi.상호명}}</a></h3>
 
-
-<b class="text-secondary">Phone Number</b>
-<div class="card bg-white mt-2 mb-5">
-    <div class="card-body">
-
-        <div id="recaptcha-container"></div>
-
-        <div id="get-code" class="input-group mb-3 {% if request.user.customer.phone_number %} d-none {% endif %}">
-            <input type="text" class="form-control" placeholder="Your phone number">
-            <div class="input-group-append">
-                <button class="btn btn-warning" type="button">Send Code</button>
-            </div>
-        </div>
-
-        <div id="verify-code" class="input-group mb-3 d-none">
-            <input type="text" class="form-control" placeholder="Verification code">
-            <div class="input-group-append">
-                <button class="btn btn-warning" type="button">Verify Code</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        'size': 'invisible',
-    });
-
-    $("#get-code button").on('click', function () {
-        const phoneNumber = $("#get-code input").val();
-        console.log(phoneNumber);
-
-        firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-            .then((confirmationResult) => {
-                // SMS sent. Prompt user to type the code from the message, then sign the
-                // user in with confirmationResult.confirm(code).
-                console.log(confirmationResult);
-                window.confirmationResult = confirmationResult;
-
-                $("#get-code").addClass("d-none");
-                $("#verify-code").removeClass("d-none");
-            }).catch((error) => {
-                // Error; SMS not sent
-                toast(error.message, 'error');
-            });
-
-
-    });
-
-    $("#verify-code button").on('click', function () {
-        const code = $("#verify-code input").val();
-
-        confirmationResult.confirm(code).then((result) => {
-            // User signed in successfully.
-            const user = result.user;
-            console.log(user.phoneNumber);
-
-            user.getIdToken().then(function (idToken) {
-                onVerify(idToken);
-            });
-        }).catch((error) => {
-            // User couldn't sign in (bad verification code?)
-            toast(error.message, 'error');
-        });
-    });
-</script>
-{% endblock %}
+</body>
+</html>

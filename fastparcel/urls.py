@@ -22,11 +22,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('profile/', views.profile),
 
-    #test
+    path('schedule_list/', views.schedule_list),
     path('route_recommend/', views.route_recommend),
-    path('map/', views.map),
     path('home/', views.home),
-
 
     path('', views.home),
     path('customer/', include((customer_urlpatterns, 'customer'))),
