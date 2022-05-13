@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    {% if cosine_pois %}
+        {% for cosine_poi in cosine_pois%}
+        <section>
+            <ul class="divided">
+                <li>
+                    <!-- Highlight -->
+                    <article class="box highlight">
+                        <header>
+                            <h3><a href="#">{{cosine_poi.상호명}}</a></h3>
+                        </header>
+                        <section>
+                            <a href="#" class="image left"><img src="{{cosine_poi.thumbnail}}" alt="" /></a>
+                            <div>
+                                <p style="margin-bottom: 1em;"><strong>평점 : </strong><em>{{cosine_poi.kakao_grade}}점</em></p>
+                                <p style="margin-bottom: 1em;"><strong>리뷰 : </strong><em>{{cosine_poi.kakao_review}}건수</em></p>
+                                <p style="margin-bottom: 1em;"><strong>도로명 : </strong><em>{{cosine_poi.road_address_name}}</em></p>
+                                <p style="margin-bottom: 1em;"><strong>지번 : </strong><em>{{cosine_poi.address_name}}</em></p>
+                            </div>
+                        </section>
+                        <div>
+                            <a href="{{cosine_poi.place_url}}" target='_blank' class="button icon solid fa-file" style="width: 47%;display: inline-block;margin-right: 5%;">카카오맵</a>
+                            <a href="javascript:setCoordinate({{cosine_poi.x}}, {{cosine_poi.y}}, '{{cosine_poi.상호명}}');" onclick="$(this).addClass('disabled');" class="button icon solid fa-file"  style="width: 47%;display: inline-block;">일정추가</a>
+                        </div>
+                    </article>
+                </li>
+            </ul>
+        </section>
+    {% endfor %}
+        <section>
+            <button class="form-button-submit button icon solid fa-envelope">경로추천</button>
+        </section>
+    {% else %}
+        <p>I have no plans to use it.</p>
+    {% endif %}
+</body>
+</html>

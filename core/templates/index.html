@@ -30,16 +30,8 @@
 								<div class="col-6 col-12-small">
 									<input name="name" placeholder="제주 스타벅스" type="text" value="{{ request.GET.name }}"/>
 								</div>
-	<!--							<div class="col-6 col-12-small">-->
-	<!--								<select>-->
-	<!--									<option value="{{ request.select }}">음식점</option>-->
-	<!--									<option value="{{ request.select }}">카페</option>-->
-	<!--									<option value="{{ request.select }}">숙박</option>-->
-	<!--									<option value="{{ request.select }}">액티비티</option>-->
-	<!--								</select>-->
-	<!--							</div>-->
 								<div class="col-12">
-									<button class="form-button-submit button icon solid fa-envelope">검색하기</button>
+									<a id="request" class="form-button-submit button icon solid fa-envelope">검색하기</a>
 								</div>
 							</div>
 						<!-- Nav -->
@@ -58,40 +50,7 @@
 						<div class="row">
 							<div id="sidebar" class="col-4 col-12-medium">
 								<!-- Highlights -->
-								{% if cosine_pois %}
-									{% for cosine_poi in cosine_pois%}
-									<section>
-										<ul class="divided">
-											<li>
-												<!-- Highlight -->
-												<article class="box highlight">
-													<header>
-														<h3><a href="#">{{cosine_poi.상호명}}</a></h3>
-													</header>
-													<section>
-														<a href="#" class="image left"><img src="{{cosine_poi.thumbnail}}" alt="" /></a>
-														<div>
-															<p style="margin-bottom: 1em;"><strong>평점 : </strong><em>{{cosine_poi.kakao_grade}}점</em></p>
-															<p style="margin-bottom: 1em;"><strong>리뷰 : </strong><em>{{cosine_poi.kakao_review}}건수</em></p>
-															<p style="margin-bottom: 1em;"><strong>도로명 : </strong><em>{{cosine_poi.road_address_name}}</em></p>
-															<p style="margin-bottom: 1em;"><strong>지번 : </strong><em>{{cosine_poi.address_name}}</em></p>
-														</div>
-													</section>
-													<div>
-														<a href="{{cosine_poi.place_url}}" target='_blank' class="button icon solid fa-file" style="width: 47%;display: inline-block;margin-right: 5%;">카카오맵</a>
-														<a href="javascript:setCoordinate({{cosine_poi.x}}, {{cosine_poi.y}}, '{{cosine_poi.상호명}}');" onclick="$(this).addClass('disabled');" class="button icon solid fa-file"  style="width: 47%;display: inline-block;">일정추가</a>
-													</div>
-												</article>
-											</li>
-										</ul>
-									</section>
-								{% endfor %}
-									<section>
-										<button class="form-button-submit button icon solid fa-envelope">경로추천</button>
-									</section>
-								{% else %}
-									<p>I have no plans to use it.</p>
-								{% endif %}
+								{% include 'include.html' %}
 							</div>
 						</div>
 					</div>
@@ -139,6 +98,23 @@
 					$("#count").val($("#routeRecommendation").find("input[type='hidden']").length - 1);
 				}
 			}
+
+			 // 'request'라는 id를 가진 버튼 클릭 시 실행.
+   			 $("#request").click(function(){
+   			 	var params = jQuery("#routeRecommendation").serialize();
+   			 	console.log(params)
+				$.ajax({
+					type : "POST",            // HTTP method type(GET, POST) 형식이다.
+					url : "find/",            // 컨트롤러에서 대기중인 URL 주소이다.
+					data : params,            // Json 형식의 데이터이다.
+					success : function(res){  // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+						console.log(res)
+					},
+					error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+						alert("통신 실패.")
+					}
+				});
+			});
 		</script>
 	</body>
 </html>

@@ -25,6 +25,7 @@ urlpatterns = [
     path('schedule_list/', views.schedule_list),
     path('route_recommend/', views.route_recommend),
     path('home/', views.home),
+    path('find/', views.home),
 
     path('', views.home),
     path('customer/', include((customer_urlpatterns, 'customer'))),
