@@ -97,16 +97,27 @@
 {% block content %}
 <table class="table table-striped">
     <thead>
-        <th>구분</th><th>순서</th><th>장소명</th><th>평점</th><th>리뷰</th>
+        <th>출발</th><th>도착</th><th>순서</th><th>장소명</th><th>평점</th><th>리뷰</th>
     </thead>
-    <tr><td></td><td>1</td><td>제주국제공항<td>4.0</td><td>50건</td></tr>
-    <tr><td></td><td>2</td><td>용두암<td>4.9</td><td>70건</td></tr>
-    <tr><td></td><td>3</td><td>제주교육박물관<td>3.2</td><td>136건</td></tr>
-	<tr><td></td><td>4</td><td>돈대표<td>4.4</td><td>305건</td></tr>
+    <tr><td><label><input type="checkbox" name="위치" value="출발"> </label></td>
+	<td> <label><input type="checkbox" name="위치" value="도착"> </label></td>
+	<td>1</td><td>제주국제공항<td>4.0</td><td>50건</td></tr>
+
+	<tr><td><label><input type="checkbox" name="위치" value="출발"> </label></td>
+	<td> <label><input type="checkbox" name="위치" value="도착"> </label></td>
+	<td>2</td><td>용두암<td>4.9</td><td>70건</td></tr>
+
+	<tr><td><label><input type="checkbox" name="위치" value="출발"> </label></td>
+	<td> <label><input type="checkbox" name="위치" value="도착"> </label></td>
+	<td>3</td><td>제주교육박물관<td>3.2</td><td>136건</td></tr>
+
+	<tr><td><label><input type="checkbox" name="위치" value="출발"> </label></td>
+	<td> <label><input type="checkbox" name="위치" value="도착"> </label></td>
+	<td>4</td><td>돈대표<td>4.4</td><td>305건</td></tr>
 </table>
 
 <!-- 버튼 click 시 url 이동 -->
-<a href="/"><button class="btn btn-primary" type="button">경로 추천</button></a>
+<a href="core/route_recommend/"><button class="btn btn-primary" type="button">경로 추천</button></a>
 {% endblock content %}
 
 </body>
