@@ -16,7 +16,7 @@
 	</head>
 	<body class="homepage is-preload">
 
-		<form id="routeRecommendation" method="get">
+		<form id="routeRecommendation" method="get" action="schedule_list/">
 			<div id="page-wrapper">
 				<!-- Header -->
 				<section id="header">
@@ -28,7 +28,7 @@
 						<br>
 							<div class="row gtr-50">
 								<div class="col-6 col-12-small">
-									<input name="name" placeholder="제주 스타벅스" type="text" value="{{ request.GET.name }}"/>
+									<input name="name" id="name" placeholder="제주 스타벅스" type="text" value="{{ request.GET.name }}"/>
 								</div>
 								<div class="col-12">
 									<a id="request" class="form-button-submit button icon solid fa-envelope">검색하기</a>
@@ -38,8 +38,8 @@
 						<nav id="nav">
 							<ul>
 								<li><a class="icon solid fa-home" href="profile/"><span>일정 계획</span></a></li>
-								<li><a class="icon solid fa-home" href="schedule_list/"><span>스케줄</span></a></li>
-								<li><a class="icon solid fa-home" href="route_recommend/"><span>경로 추천(완료)</span></a></li>
+<!--								<li><a class="icon solid fa-home" href="schedule_list/"><span>스케줄</span></a></li>-->
+<!--								<li><a class="icon solid fa-home" href="route_recommend/"><span>경로 추천(완료)</span></a></li>-->
 							</ul>
 						</nav>
 					</div>
@@ -54,6 +54,9 @@
 							</div>
 						</div>
 					</div>
+				</section>
+				<section>
+					<button class="form-button-submit button icon solid fa-envelope">경로추천</button>
 				</section>
 			</div>
 			<input type="hidden" id="count" name="count" value="0">
@@ -98,20 +101,86 @@
 					$("#count").val($("#routeRecommendation").find("input[type='hidden']").length - 1);
 				}
 			}
+			$.ajaxSetup({
+				headers: { "X-CSRFToken": '{{csrf_token}}' }
+			});
+			document.addEventListener('keydown', function(event) {
+				if (event.keyCode === 13) {
+					event.preventDefault();
+				};
+			}, true);
 
-			 // 'request'라는 id를 가진 버튼 클릭 시 실행.
-   			 $("#request").click(function(){
-   			 	var params = jQuery("#routeRecommendation").serialize();
-   			 	console.log(params)
+			// 'request'라는 id를 가진 버튼 클릭 시 실행.
+			$("#request").click(function(){
 				$.ajax({
 					type : "POST",            // HTTP method type(GET, POST) 형식이다.
-					url : "find/",            // 컨트롤러에서 대기중인 URL 주소이다.
-					data : params,            // Json 형식의 데이터이다.
+					url : "test/",            // 컨트롤러에서 대기중인 URL 주소이다.
+					dataType: "JSON",
+					data: {
+						'name': $("#name").val(),
+						csrfmiddlewaretoken: '{{ csrf_token }}'
+					},           // Json 형식의 데이터이다.
+					headers: {
+					   'X-CSRFToken' : '{{ csrf_token }}'
+					},
 					success : function(res){  // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-						console.log(res)
+						const port_data = JSON.stringify(res);
+						var port_data_json = JSON.parse(port_data);
+						console.log(port_data_json.length)
+						var html = "";
+
+						for (var i = 0; i < port_data_json.length; i++) {
+							html += '<section>'
+							html += '	<ul class="divided">'
+							html += '		<li>'
+							html += '			<article class="box highlight">'
+							html += '				<header>'
+							html += '					<h3><a href="#">'
+							html +=	port_data_json[i].상호명
+							html += '					</a></h3>'
+							html += '				</header>'
+							html += '				<section>'
+							html += '					<a href="#" class="image left"><img src="'
+							html += port_data_json[i].thumbnail
+							html += '" alt="" /></a>'
+							html += '					<div>'
+							html += '						<p style="margin-bottom: 1em;"><strong>평점 : </strong><em>'
+							html += port_data_json[i].kakao_grade
+							html += '점</em></p>'
+							html += '						<p style="margin-bottom: 1em;"><strong>리뷰 : </strong><em>'
+							html += port_data_json[i].kakao_review
+							html += '건수</em></p>'
+							html += '						<p style="margin-bottom: 1em;"><strong>도로명 : </strong><em>'
+							html += port_data_json[i].road_address_name
+							html += '</em></p>'
+							html += '						<p style="margin-bottom: 1em;"><strong>지번 : </strong><em>'
+							html += port_data_json[i].address_name
+							html += '</em></p>'
+							html += '					</div>'
+							html += '				</section>'
+							html += '				<div>'
+							html += '					<a href="'
+							html += port_data_json[i].place_url
+							html += '" target="_blank" class="button icon solid fa-file" style="width: 47%;display: inline-block;margin-right: 5%;">카카오맵</a>'
+							html += '					<a href="javascript:setCoordinate('
+							html += port_data_json[i].x
+							html += ', '
+							html += port_data_json[i].y
+							html += ', \''
+							html += port_data_json[i].상호명
+							html += '\');" onclick="$(this).addClass(\'disabled\');" class="button icon solid fa-file"  style="width: 47%;display: inline-block;">일정추가</a>'
+							html += '				</div>'
+							html += '			</article>'
+							html += '		</li>'
+							html += '	</ul>'
+							html += '</section>'
+						}
+
+						console.log(html)
+						$("#sidebar").html(html);
 					},
 					error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
-						alert("통신 실패.")
+						alert(textStatus)
 					}
 				});
 			});
