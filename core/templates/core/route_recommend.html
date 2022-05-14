@@ -1,151 +1,191 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-<head>
-	<meta charset="utf-8"/>
-	<title>경로 추천 (완료)</title>
-	<br>
-	<h2 style="text-align:center;">일정 계획</h2>
-</head>
-<body>
-<br>
-<h3 style="color: #ED786A;">1일차</h3>
+	<head>
+		{% load static %}
+		<title>WARA-JEJU</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static "css/main.css" %}" />
+		<style>
+			a.disabled {
+			  pointer-events: none;
+			  cursor: default;
+			  background-color: grey !important;
+			}
+		</style>
+	</head>
+	<body class="homepage is-preload">
+		<form id="routeRecommendation" method="get" action="../route_recommend/">
+			<div id="page-wrapper">
+				<!-- Header -->
+				<section id="header">
+					<div class="container">
+						<!-- Logo -->
+						<h1 id="logo"><a href="index.html">WARA-JEJU</a></h1>
+						<p>바쁜 사람들을 위해 선택한 일정 최적의 경로 추천 시스템</p>
+					</div>
+				</section>
+				<!-- Main -->
+				<section id="map" style="width:100%;height:450px;">
 
-	<!-- 이미지 지도를 표시할 div 입니다 -->
-	<div id="map" style="width:100%;height:350px;"></div>
+				</section>
+				<table class="table table-striped">
+					<thead>
+					<th>구분</th>
+					<th>순서</th>
+					<th>장소명</th>
+					<th>평점</th>
+					<th>리뷰</th>
+					</thead>
+					<tr class="danger">
+						<td>출발지</td>
+						<td>1</td>
+						<td>제주국제공항
+						<td>4.0</td>
+						<td>50건</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>2</td>
+						<td>용두암
+						<td>4.9</td>
+						<td>70건</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>3</td>
+						<td>제주교육박물관
+						<td>3.2</td>
+						<td>136건</td>
+					</tr>
+					<tr class="info">
+						<td>도착지</td>
+						<td>4</td>
+						<td>돈대표
+						<td>4.4</td>
+						<td>305건</td>
+					</tr>
+				</table>
+				<footer style="height: 75px; font-weight: bold;display: flex;align-items: center;position: fixed;left: 0;right: 0;bottom: -1rem;">
+					<button class="form-button-submit button icon solid fa-envelope">공유하기</button>
+				</footer>
+			</div>
+			<input type="hidden" id="count" name="count" value="0">
+		</form>
+		<!-- Scripts -->
+		<script src="{% static "js/jquery.min.js" %}"></script>
+		<script src="{% static "js/jquery.dropotron.min.js" %}"></script>
+		<script src="{% static "js/browser.min.js" %}"></script>
+		<script src="{% static "js/breakpoints.min.js" %}"></script>
+		<script src="{% static "js/util.js" %}"></script>
+		<script src="{% static "js/main.js" %}"></script>
+		<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=	2abb564f7a7f2b1790d4cf786a23c196"></script>
+		<script>
+			var mapContainer = document.getElementById('map'), // 지도를 표시할 div
 
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=	2abb564f7a7f2b1790d4cf786a23c196"></script>
-	<script>
+			mapOption = {
+				center: new kakao.maps.LatLng(33.5070789578184, 126.592769004244), // 지도의 중심좌표
+				level: 8 // 지도의 확대 레벨
+			};
 
-	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-    mapOption = {
-        center: new kakao.maps.LatLng(33.5070789578184, 126.592769004244), // 지도의 중심좌표
-        level: 8 // 지도의 확대 레벨
-    };
+			var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+			// 출발 마커가 표시될 위치입니다
+			var startPosition = new kakao.maps.LatLng(33.5070789578184, 126.492769004244);
 
-	// 출발 마커가 표시될 위치입니다
-	var startPosition = new kakao.maps.LatLng(33.5070789578184, 126.492769004244);
+			// 도착 마커가 표시될 위치입니다
+			var arrivePosition = new kakao.maps.LatLng(33.5416952747898, 126.6728294651);
 
-	// 도착 마커가 표시될 위치입니다
-	var arrivePosition = new kakao.maps.LatLng(33.5416952747898, 126.6728294651);
+			// 중간 마커를 표시할 위치와 title 객체 배열입니다
+			var positions = [
+				{
+					title: '용두암',
+					latlng: new kakao.maps.LatLng(33.5161106216721, 126.511957109074)
+				},
+				{
+					title: '제주교육박물관',
+					latlng: new kakao.maps.LatLng(33.4946731533432, 126.537972321229)
+				},
+			];
 
-    // 중간 마커를 표시할 위치와 title 객체 배열입니다
-	var positions = [
-    	{
-        	title: '용두암',
-        	latlng: new kakao.maps.LatLng(33.5161106216721, 126.511957109074)
-    	},
-    	{
-        	title: '제주교육박물관',
-        	latlng: new kakao.maps.LatLng(33.4946731533432, 126.537972321229)
-    	},
-	];
+			// 출발 마커 이미지의 주소입니다
+			var startSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png',
+				startSize = new kakao.maps.Size(50, 45), // 출발 마커 이미지의 크기입니다
+				startOption = {
+					offset: new kakao.maps.Point(15, 43) // 출발 마커 이미지에서 마커의 좌표에 일치시킬 좌표를 설정합니다 (기본값은 이미지의 가운데 아래입니다)
+			};
 
-	// 출발 마커 이미지의 주소입니다
-	var startSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png',
-    	startSize = new kakao.maps.Size(50, 45), // 출발 마커 이미지의 크기입니다
-    	startOption = {
-        	offset: new kakao.maps.Point(15, 43) // 출발 마커 이미지에서 마커의 좌표에 일치시킬 좌표를 설정합니다 (기본값은 이미지의 가운데 아래입니다)
-    };
+			// 출발 마커 이미지를 생성합니다
+			var startImage = new kakao.maps.MarkerImage(startSrc, startSize, startOption);
 
-	// 출발 마커 이미지를 생성합니다
-	var startImage = new kakao.maps.MarkerImage(startSrc, startSize, startOption);
+			// 출발 마커를 생성합니다
+			var startMarker = new kakao.maps.Marker({
+				map: map, // 출발 마커가 지도 위에 표시되도록 설정합니다
+				position: startPosition,
+				image: startImage // 출발 마커이미지를 설정합니다
+			});
 
-	// 출발 마커를 생성합니다
-	var startMarker = new kakao.maps.Marker({
-    	map: map, // 출발 마커가 지도 위에 표시되도록 설정합니다
-    	position: startPosition,
-    	image: startImage // 출발 마커이미지를 설정합니다
-	});
+			// 도착 마커 이미지 주소입니다
+			var arriveSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/blue_b.png',
+				arriveSize = new kakao.maps.Size(50, 45), // 도착 마커 이미지의 크기입니다
+				arriveOption = {
+					offset: new kakao.maps.Point(15, 43) // 도착 마커 이미지에서 마커의 좌표에 일치시킬 좌표를 설정합니다 (기본값은 이미지의 가운데 아래입니다)
+			};
 
-	// 도착 마커 이미지 주소입니다
-	var arriveSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/blue_b.png',
-		arriveSize = new kakao.maps.Size(50, 45), // 도착 마커 이미지의 크기입니다
-		arriveOption = {
-    		offset: new kakao.maps.Point(15, 43) // 도착 마커 이미지에서 마커의 좌표에 일치시킬 좌표를 설정합니다 (기본값은 이미지의 가운데 아래입니다)
-	};
+			// 도착 마커 이미지를 생성합니다
+			var arriveImage = new kakao.maps.MarkerImage(arriveSrc, arriveSize, arriveOption);
 
-	// 도착 마커 이미지를 생성합니다
-	var arriveImage = new kakao.maps.MarkerImage(arriveSrc, arriveSize, arriveOption);
+			// 도착 마커를 생성합니다
+			var arriveMarker = new kakao.maps.Marker({
+				map: map, // 도착 마커가 지도 위에 표시되도록 설정합니다
+				position: arrivePosition,
+				image: arriveImage // 도착 마커이미지를 설정합니다
+			});
 
-	// 도착 마커를 생성합니다
-	var arriveMarker = new kakao.maps.Marker({
-    	map: map, // 도착 마커가 지도 위에 표시되도록 설정합니다
-    	position: arrivePosition,
-    	image: arriveImage // 도착 마커이미지를 설정합니다
-	});
+			// 중간 마커 이미지의 이미지 주소입니다
+			var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
-	// 중간 마커 이미지의 이미지 주소입니다
-	var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+			for (var i = 0; i < positions.length; i ++) {
 
-	for (var i = 0; i < positions.length; i ++) {
+				// 중간 마커 이미지의 이미지 크기 입니다
+				var imageSize = new kakao.maps.Size(24, 35);
 
-    // 중간 마커 이미지의 이미지 크기 입니다
-    var imageSize = new kakao.maps.Size(24, 35);
+				// 중간 마커 이미지를 생성합니다
+				var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
 
-    // 중간 마커 이미지를 생성합니다
-    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
-
-    // 중간 마커를 생성합니다
-    var marker = new kakao.maps.Marker({
-        map: map, // 마커를 표시할 지도
-        position: positions[i].latlng, // 마커를 표시할 위치
-        title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-        image : markerImage // 마커 이미지
-    });
+				// 중간 마커를 생성합니다
+				var marker = new kakao.maps.Marker({
+					map: map, // 마커를 표시할 지도
+					position: positions[i].latlng, // 마커를 표시할 위치
+					title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+					image : markerImage // 마커 이미지
+				});
 
 
-    // 선을 구성하는 좌표 배열입니다. 이 좌표들을 이어서 선을 표시합니다
-	var linePath = [
-    	new kakao.maps.LatLng(33.5070789578184, 126.492769004244),
-    	new kakao.maps.LatLng(33.5161106216721, 126.511957109074),  // 1번 -> 2번
+				// 선을 구성하는 좌표 배열입니다. 이 좌표들을 이어서 선을 표시합니다
+				var linePath = [
+					new kakao.maps.LatLng(33.5070789578184, 126.492769004244),
+					new kakao.maps.LatLng(33.5161106216721, 126.511957109074),  // 1번 -> 2번
 
-    	new kakao.maps.LatLng(33.5161106216721, 126.511957109074),
-    	new kakao.maps.LatLng(33.4946731533432, 126.537972321229),  // 2번 -> 3번
+					new kakao.maps.LatLng(33.5161106216721, 126.511957109074),
+					new kakao.maps.LatLng(33.4946731533432, 126.537972321229),  // 2번 -> 3번
 
-    	new kakao.maps.LatLng(33.4946731533432, 126.537972321229),
-    	new kakao.maps.LatLng(33.5416952747898, 126.6728294651), 	// 3번 -> 4번
-	];
+					new kakao.maps.LatLng(33.4946731533432, 126.537972321229),
+					new kakao.maps.LatLng(33.5416952747898, 126.6728294651), 	// 3번 -> 4번
+				];
 
-	// 지도에 표시할 선을 생성합니다
-	var polyline = new kakao.maps.Polyline({
-    	path: linePath, // 선을 구성하는 좌표배열 입니다
-    	strokeWeight: 5, // 선의 두께 입니다
-    	strokeColor: '#ED786A', // 선의 색깔입니다
-    	strokeOpacity: 0.9, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-    	strokeStyle: 'dashed' // 선의 스타일입니다
-	});
+				// 지도에 표시할 선을 생성합니다
+				var polyline = new kakao.maps.Polyline({
+					path: linePath, // 선을 구성하는 좌표배열 입니다
+					strokeWeight: 5, // 선의 두께 입니다
+					strokeColor: '#ED786A', // 선의 색깔입니다
+					strokeOpacity: 0.9, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+					strokeStyle: 'dashed' // 선의 스타일입니다
+				});
 
-	// 지도에 선을 표시합니다
-	polyline.setMap(map);
-    	}
-	</script>
-	<br>
-	<br>
-
-
-
-
-{% block css %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<style type="text/css">
-    tbody > tr {cursor: pointer;}
-</style>
-{% endblock css %}
-
-{% block content %}
-<table class="table table-striped">
-    <thead>
-        <th>구분</th><th>순서</th><th>장소명</th><th>평점</th><th>리뷰</th>
-    </thead>
-    <tr class="danger"><td>출발지</td><td>1</td><td>제주국제공항<td>4.0</td><td>50건</td></tr>
-    <tr><td></td><td>2</td><td>용두암<td>4.9</td><td>70건</td></tr>
-    <tr><td></td><td>3</td><td>제주교육박물관<td>3.2</td><td>136건</td></tr>
-	<tr class="info"><td>도착지</td><td>4</td><td>돈대표<td>4.4</td><td>305건</td></tr>
-</table>
-
-{% endblock content %}
-
-</body>
+				// 지도에 선을 표시합니다
+				polyline.setMap(map);
+			}
+		</script>
+	</body>
 </html>
