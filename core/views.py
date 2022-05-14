@@ -253,7 +253,7 @@ def recommendation(request):
     return render(request, 'sign_up.html', {'form': form})
 
 def schedule_list(request):
-    return render(request, 'core/schedule_list.html')
+    return render(request, 'core/schedule_list2.html')
 
 def route_recommend(request):
     return render(request, 'core/route_recommend.html')

@@ -15,7 +15,6 @@
 		</style>
 	</head>
 	<body class="homepage is-preload">
-
 		<form id="routeRecommendation" method="get" action="schedule_list/">
 			<div id="page-wrapper">
 				<!-- Header -->
@@ -45,7 +44,7 @@
 					</div>
 				</section>
 				<!-- Main -->
-				<section id="main">
+				<section id="main" style="margin-bottom: 2rem;">
 					<div class="container">
 						<div class="row">
 							<div id="sidebar" class="col-4 col-12-medium">
@@ -55,11 +54,12 @@
 						</div>
 					</div>
 				</section>
-				<section>
+				<footer style="height: 75px; font-weight: bold;display: flex;align-items: center;position: fixed;left: 0;right: 0;bottom: -1rem;">
 					<button class="form-button-submit button icon solid fa-envelope">경로추천</button>
-				</section>
+				</footer>
 			</div>
 			<input type="hidden" id="count" name="count" value="0">
+		</form>
 		<!-- Scripts -->
 		<script src="{% static "js/jquery.min.js" %}"></script>
 		<script src="{% static "js/jquery.dropotron.min.js" %}"></script>
